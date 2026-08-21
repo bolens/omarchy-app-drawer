@@ -928,6 +928,29 @@ Item {
     }
   }
 
+  IpcHandler {
+    target: "omabar-drawer"
+
+    function toggle(): string {
+      root.widgetDrawerExpanded = !root.widgetDrawerExpanded
+      return root.widgetDrawerExpanded ? "expanded" : "collapsed"
+    }
+
+    function expand(): string {
+      root.widgetDrawerExpanded = true
+      return "expanded"
+    }
+
+    function collapse(): string {
+      root.widgetDrawerExpanded = false
+      return "collapsed"
+    }
+
+    function status(): string {
+      return root.widgetDrawerExpanded ? "expanded" : "collapsed"
+    }
+  }
+
   Timer {
     interval: 100
     running: root.tooltipShown

@@ -4,6 +4,8 @@ An Ice-style replacement bar for Omarchy Quattro. It keeps the normal Omarchy ba
 
 Click the far-right ellipsis to reveal the widgets. Click the chevron to hide them again. Hidden widgets remain loaded, preserving their state and avoiding needless restarts.
 
+The drawer can also be controlled from the command line with `omarchy-shell omabar-drawer toggle`, `expand`, `collapse`, or `status`.
+
 ## Install
 
 ```bash
