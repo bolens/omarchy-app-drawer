@@ -103,6 +103,11 @@ Item {
   // Ice-style drawer: keep the right-hand widgets mounted, but collapse their
   // layout space until the user asks to see them.
   property bool widgetDrawerExpanded: false
+  readonly property var alwaysVisibleWidgetIds: {
+    var values = barConfig && Array.isArray(barConfig.drawerAlwaysVisible)
+      ? barConfig.drawerAlwaysVisible : []
+    return values.map(function(value) { return String(value) })
+  }
 
   function registerClickTarget(target) {
     if (!target || clickTargets.indexOf(target) !== -1) return
@@ -396,6 +401,33 @@ Item {
     var serial = barConfigSerial
     var entries = layoutConfig ? layoutConfig[region] : null
     return Array.isArray(entries) ? entries : []
+  }
+
+  function rightEntries(alwaysVisible) {
+    var entries = layoutEntries("right")
+    return entries.filter(function(entry) {
+      var pinned = alwaysVisibleWidgetIds.indexOf(entryId(entry)) !== -1
+      return alwaysVisible ? pinned : !pinned
+    })
+  }
+
+  function widgetDisplayName(entry) {
+    var id = entryId(entry)
+    var metadata = barWidgetRegistry && typeof barWidgetRegistry.metadataFor === "function"
+      ? barWidgetRegistry.metadataFor(id) : null
+    return metadata && metadata.displayName ? String(metadata.displayName) : id
+  }
+
+  function setWidgetAlwaysVisible(id, visible) {
+    var next = alwaysVisibleWidgetIds.slice()
+    var index = next.indexOf(id)
+    if (visible && index === -1) next.push(id)
+    if (!visible && index !== -1) next.splice(index, 1)
+    if (!shell || typeof shell.mutateShellConfig !== "function") return
+    shell.mutateShellConfig(function(config) {
+      if (!Util.isPlainObject(config.bar)) config.bar = {}
+      config.bar.drawerAlwaysVisible = next
+    })
   }
 
   // Tab order for the panels in one bar region. Scoped to a single bar surface
@@ -1133,12 +1165,14 @@ Item {
               NumberAnimation { duration: 180; easing.type: Easing.InOutCubic }
             }
 
-            RightModules {
+            DrawerRightModules {
               id: hiddenRightModules
               anchors.right: parent.right
               anchors.verticalCenter: parent.verticalCenter
             }
           }
+
+          AlwaysVisibleRightModules {}
 
           WidgetDrawerToggle {}
         }
@@ -1174,12 +1208,14 @@ Item {
               NumberAnimation { duration: 180; easing.type: Easing.InOutCubic }
             }
 
-            RightModules {
+            DrawerRightModules {
               id: hiddenVerticalRightModules
               anchors.bottom: parent.bottom
               anchors.horizontalCenter: parent.horizontalCenter
             }
           }
+
+          AlwaysVisibleRightModules {}
 
           WidgetDrawerToggle {}
         }
@@ -1321,12 +1357,25 @@ Item {
     region: "left"
   }
 
-  component RightModules: ModuleList {
-    entries: root.layoutEntries("right")
+  component DrawerRightModules: ModuleList {
+    entries: root.rightEntries(false)
+    region: "right"
+  }
+
+  component AlwaysVisibleRightModules: ModuleList {
+    entries: root.rightEntries(true)
     region: "right"
   }
 
   component WidgetDrawerToggle: WidgetButton {
+    id: drawerToggle
+
+    property bool managerOpen: false
+
+    function close() {
+      managerOpen = false
+    }
+
     bar: root
     text: root.widgetDrawerExpanded ? "\uf054" : "\uf142"
     fontSize: Style.font.body
@@ -1336,6 +1385,64 @@ Item {
 
     onPressed: function(button) {
       if (button === Qt.LeftButton) root.widgetDrawerExpanded = !root.widgetDrawerExpanded
+      else if (button === Qt.RightButton) managerOpen = !managerOpen
+    }
+
+    PopupCard {
+      id: managerPopup
+      anchorItem: drawerToggle
+      owner: drawerToggle
+      bar: root
+      open: drawerToggle.managerOpen
+      contentWidth: managerPopup.fittedContentWidth(Style.space(320))
+      contentHeight: managerPopup.fittedContentHeight(widgetList.implicitHeight, Style.space(520))
+
+      Flickable {
+        anchors.fill: parent
+        clip: true
+        contentWidth: width
+        contentHeight: widgetList.implicitHeight
+        boundsBehavior: Flickable.StopAtBounds
+
+        Column {
+          id: widgetList
+          width: parent.width
+          spacing: Style.space(6)
+
+          Text {
+            text: "Always visible"
+            color: root.foreground
+            font.family: root.fontFamily
+            font.pixelSize: Style.font.body
+            font.bold: true
+          }
+
+          Text {
+            width: parent.width
+            text: "Choose widgets that stay outside the drawer. All widgets are hidden by default."
+            color: Qt.darker(root.foreground, 1.4)
+            font.family: root.fontFamily
+            font.pixelSize: Style.font.caption
+            wrapMode: Text.WordWrap
+          }
+
+          Repeater {
+            model: root.layoutEntries("right")
+
+            Toggle {
+              required property var modelData
+              width: widgetList.width
+              implicitHeight: Style.space(46)
+              label: root.widgetDisplayName(modelData)
+              description: root.entryId(modelData)
+              checked: root.alwaysVisibleWidgetIds.indexOf(root.entryId(modelData)) !== -1
+              titleSize: Style.font.bodySmall
+              descriptionSize: Style.font.caption
+              onClicked: root.setWidgetAlwaysVisible(root.entryId(modelData), !checked)
+            }
+          }
+        }
+      }
     }
   }
 

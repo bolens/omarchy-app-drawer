@@ -4,6 +4,8 @@ An Ice-style replacement bar for Omarchy Quattro. It keeps the normal Omarchy ba
 
 Click the far-right ellipsis to reveal the widgets. Click the chevron to hide them again. Hidden widgets remain loaded, preserving their state and avoiding needless restarts.
 
+Right-click the drawer icon to choose widgets that should remain visible. Every right-side widget starts inside the drawer; selections such as Power or Battery are persisted in Omarchy's `shell.json` configuration.
+
 ## Install
 
 ```bash
