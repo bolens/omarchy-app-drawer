@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Commons
+import qs.Ui
 
 // Labeled toggle row: title + optional description on the left, a
 // `ToggleSwitch` on the right. Clicking anywhere on the row emits `clicked()`;

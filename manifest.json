@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "io.github.amitcpatel.omabar-drawer",
   "name": "OmaBar Drawer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Amit Patel",
   "description": "An Ice-style Omarchy bar that collapses right-side widgets behind one icon.",
   "kinds": ["bar"],
