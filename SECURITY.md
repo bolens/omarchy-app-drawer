@@ -8,6 +8,8 @@ Security fixes are provided for the latest release on the `main` branch.
 
 OmaBar Drawer is a QML-only replacement for Omarchy's stock bar. It performs no network requests, downloads, package installation, privilege escalation, credential access, telemetry, or service management. Its only plugin-specific persisted value is the user-selected `bar.drawerAlwaysVisible` list in Omarchy's existing `~/.config/omarchy/shell.json` file.
 
+All bar-owned text sinks force `Text.PlainText`, including widget tooltips, manifest-provided names, configured command output, and configured command tooltips. This prevents Qt's automatic rich-text handling from interpreting widget-controlled markup or loading remote resources.
+
 The inherited stock-bar implementation supports custom command widgets already authored by the user in `shell.json`. OmaBar Drawer neither creates those entries nor downloads commands for them.
 
 ## Reporting

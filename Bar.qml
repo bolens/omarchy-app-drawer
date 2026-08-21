@@ -1127,6 +1127,7 @@ Item {
           id: tooltipLabel
           anchors.centerIn: parent
           text: root.tooltipText
+          textFormat: Text.PlainText
           color: Color.tooltip.text
           font.family: root.fontFamily
           font.pixelSize: Style.font.body
@@ -1411,6 +1412,7 @@ Item {
 
           Text {
             text: "Always visible"
+            textFormat: Text.PlainText
             color: root.foreground
             font.family: root.fontFamily
             font.pixelSize: Style.font.body
@@ -1420,6 +1422,7 @@ Item {
           Text {
             width: parent.width
             text: "Choose widgets that stay outside the drawer. All widgets are hidden by default."
+            textFormat: Text.PlainText
             color: Qt.darker(root.foreground, 1.4)
             font.family: root.fontFamily
             font.pixelSize: Style.font.caption
@@ -1429,7 +1432,7 @@ Item {
           Repeater {
             model: root.layoutEntries("right")
 
-            Toggle {
+            PlainTextToggle {
               required property var modelData
               width: widgetList.width
               implicitHeight: Style.space(46)
@@ -1922,7 +1925,7 @@ Item {
     }
   }
 
-  component CustomCommandModule: WidgetButton {
+  component CustomCommandModule: PlainTextWidgetButton {
     id: customRoot
 
     required property var entry
