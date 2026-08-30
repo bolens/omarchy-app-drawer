@@ -8,8 +8,8 @@ command -v jq >/dev/null || { printf 'Missing required command: jq\n' >&2; exit 
 shell_pid=""
 while read -r candidate; do
   [[ $candidate =~ ^[1-9][0-9]*$ ]] || continue
-  if [[ $($qs_command ipc --pid "$candidate" call shell ping 2>/dev/null || true) == ok ]] &&
-     $qs_command ipc --pid "$candidate" call app-drawer status >/dev/null 2>&1; then
+  probe=$($qs_command ipc --pid "$candidate" call app-drawer status 2>/dev/null || true)
+  if jq -e '.ipcVersion == 1 and (.presentations | type == "array")' <<<"$probe" >/dev/null 2>&1; then
     shell_pid=$candidate
     break
   fi
@@ -81,7 +81,6 @@ collapsed=$(wait_for_state false) || { printf 'Drawer did not collapse.\n' >&2; 
 }
 collapsed_visible=$(jq -r '.visibleEntries' <<<"$collapsed")
 saved_entries=$(jq -r '.savedEntries' <<<"$collapsed")
-always_visible=$(jq -r '.alwaysVisible | length' <<<"$collapsed")
 [[ $saved_entries -gt 0 && $collapsed_visible -ge $((saved_entries + 1)) ]] || {
   printf 'Mounted per-monitor layout did not retain the saved entries and toggle: %s\n' "$collapsed" >&2
   exit 1

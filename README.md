@@ -9,7 +9,7 @@ A compact, per-monitor drawer for Omarchy Shell's stock bar. It keeps the stock 
 ## Highlights
 
 - Independent expanded/collapsed state and click-or-hover behavior per monitor.
-- Four deterministic reveal styles—Taskbar wipe, Cascade, Soft cascade, and Uniform reveal—plus Instant mode.
+- Four deterministic reveal styles: Taskbar wipe, Cascade, Soft cascade, and Uniform reveal. Instant mode disables the transition.
 - Smooth, Quick, Gentle, and Linear motion curves with a 250 ms default and topology-stable slot bindings.
 - Configurable glyphs, spacing, colors, actions, animation style, duration, curve, and hover-close delay.
 - Always-visible pins for selected right-side widgets.
@@ -61,6 +61,12 @@ Persisted drawer state is normalized through a versioned, idempotent migration. 
 This fork follows the same persistent-service, guarded-IPC, compact-settings, deterministic-test, and exact-path QML harness patterns used by [P2P Services](https://github.com/bolens/omarchy-p2p-services) and [Privacy Devices](https://github.com/bolens/omarchy-privacy-devices). The legacy full-bar implementation remains only as migration and licensing reference; it is not a manifest entry point.
 
 Run `npm test` for deterministic model cases, randomized invariants, migration/deployment safety, crash guards, isolated QML runtime harnesses, QML linting, manifest validation, and live IPC checks. Set `OMABAR_QML_TESTS=never` to skip isolated QML, `OMABAR_LIVE_TESTS=never` to skip live checks, `OMABAR_LIVE_TESTS=always` to require a live shell, or `OMABAR_STRESS_TESTS=always` for concurrent IPC stress. Use `scripts/deploy-shell-runtime` to copy and byte-verify runtime files into an existing installation before restarting Omarchy Shell.
+
+Run `scripts/capture-screenshots --verify` to record collapsed, expanded,
+settings, and animation evidence without retaining files. To inspect the files,
+pass an empty directory below `/tmp` with `--audit-dir`. The capture restores
+the prior appearance, monitor state, interaction mode, and open panel. It also
+checks that the Quickshell process inventory does not change.
 
 ## Credits and license
 

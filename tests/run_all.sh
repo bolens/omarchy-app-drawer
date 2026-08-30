@@ -13,6 +13,7 @@ node tests/crash_safety.test.js
 node tests/runtime.test.js
 node tests/release.test.js
 node tests/site.test.js
+node tests/fleet_hardening.test.js
 omarchy_path=${OMARCHY_PATH:-/home/panda/.local/share/omarchy-overlay}
 qmllint_bin=${QMLLINT:-qmllint}
 "$qmllint_bin" -I "$omarchy_path/shell" BarWidget.qml DrawerSettings.qml DrawerAppearanceSettings.qml Service.qml Bar.qml
