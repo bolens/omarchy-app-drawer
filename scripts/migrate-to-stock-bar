@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+plugin_id=io.github.bolens.app-drawer
+legacy_plugin_id=io.github.amitcpatel.omabar-drawer
+config=${1:-${XDG_CONFIG_HOME:-$HOME/.config}/omarchy/shell.json}
+[[ -f $config ]] || { printf 'Shell configuration not found: %s\n' "$config" >&2; exit 2; }
+command -v jq >/dev/null || { printf 'jq is required for safe JSON migration.\n' >&2; exit 2; }
+backup="$config.pre-app-drawer-v2"
+temporary=$(mktemp "${TMPDIR:-/tmp}/omarchy-app-drawer.XXXXXX")
+trap 'rm -f -- "$temporary"' EXIT
+cp -p -- "$config" "$backup"
+jq --arg id "$plugin_id" --arg legacy "$legacy_plugin_id" '
+  .bar = (.bar // {}) |
+  .bar.layout = (.bar.layout // {}) |
+  .bar.layout.right = ((.bar.layout.right // []) | map(select((if type == "string" then . else (.id // .plugin // .module // "") end) as $entry | $entry != $id and $entry != $legacy)) + [$id]) |
+  .bar.id = "omarchy.bar" |
+  .bar.drawerExpanded = true
+' "$config" >"$temporary"
+jq -e . "$temporary" >/dev/null
+install -m 0644 -- "$temporary" "$config"
+printf 'Migrated to the stock-bar drawer widget. Backup: %s\n' "$backup"

@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+qs_command=${OMABAR_QS_COMMAND:-qs}
+command -v "$qs_command" >/dev/null || { printf 'Missing required command: %s\n' "$qs_command" >&2; exit 127; }
+command -v jq >/dev/null || { printf 'Missing required command: jq\n' >&2; exit 127; }
+
+shell_pid=""
+while read -r candidate; do
+  [[ $candidate =~ ^[1-9][0-9]*$ ]] || continue
+  if [[ $($qs_command ipc --pid "$candidate" call shell ping 2>/dev/null || true) == ok ]] &&
+     $qs_command ipc --pid "$candidate" call app-drawer status >/dev/null 2>&1; then
+    shell_pid=$candidate
+    break
+  fi
+done < <($qs_command list --all | awk '/Process ID:/ { print $3 }')
+[[ -n $shell_pid ]] || { printf 'No IPC-ready App Drawer shell found.\n' >&2; exit 1; }
+
+status() { $qs_command ipc --pid "$shell_pid" call app-drawer status; }
+wait_for_state() {
+  local expected=$1 result
+  for _attempt in {1..40}; do
+    result=$(status)
+    if [[ $(jq -r --argjson expected "$expected" '.monitorStates | length > 0 and all(.[]; . == $expected)' <<<"$result") == true ]]; then
+      printf '%s\n' "$result"
+      return 0
+    fi
+    sleep 0.05
+  done
+  return 1
+}
+
+initial=$(status)
+[[ $(jq -r '.settingsVersion' <<<"$initial") -eq 3
+   && $(jq -r '.ipcVersion' <<<"$initial") -eq 1
+   && $(jq -r '[.presentations[].registrationGeneration] as $g | ($g|length) > 0 and (($g|unique|length) == ($g|length))' <<<"$initial") == true ]] || {
+  printf 'Version or presentation-generation contract failed: %s\n' "$initial" >&2
+  exit 1
+}
+registered_monitors=$($qs_command ipc --pid "$shell_pid" call app-drawer registeredMonitors)
+target_monitor=$(jq -r '.[0] // ""' <<<"$registered_monitors")
+[[ -n $target_monitor ]] || { printf 'No registered drawer monitor.\n' >&2; exit 1; }
+initial_expanded=$(jq -r '.expanded' <<<"$initial")
+initial_monitor_states=$(jq -c '.monitorStates' <<<"$initial")
+restore() {
+  $qs_command ipc --pid "$shell_pid" call app-drawer closeSettings >/dev/null 2>&1 || true
+  if [[ $(jq 'length' <<<"$initial_monitor_states") -gt 0 ]]; then
+    while IFS=$'\t' read -r screen expanded; do
+      $qs_command ipc --pid "$shell_pid" call app-drawer setMonitorExpanded "$screen" "$expanded" >/dev/null 2>&1 || true
+    done < <(jq -r 'to_entries[] | [.key,.value] | @tsv' <<<"$initial_monitor_states")
+  else
+    $qs_command ipc --pid "$shell_pid" call app-drawer setExpanded "$initial_expanded" >/dev/null 2>&1 || true
+  fi
+  sleep 0.2
+}
+trap restore EXIT INT TERM
+
+$qs_command ipc --pid "$shell_pid" call app-drawer openSettings >/dev/null
+settings_status=$($qs_command ipc --pid "$shell_pid" call app-drawer settingsStatus)
+[[ $(jq -r '.open' <<<"$settings_status") == true
+   && $(jq -r '.requestedOpen' <<<"$settings_status") == true
+   && $(jq -r '.viewportHeight' <<<"$settings_status") -gt 0
+   && $(jq -r '.renderedRows' <<<"$settings_status") -gt 1 ]] || {
+  printf 'Settings panel has no rendered viewport: %s\n' "$settings_status" >&2
+  exit 1
+}
+$qs_command ipc --pid "$shell_pid" call app-drawer closeSettings >/dev/null
+$qs_command ipc --pid "$shell_pid" call app-drawer openMonitorAppearance "$target_monitor" >/dev/null
+target_settings=$($qs_command ipc --pid "$shell_pid" call app-drawer settingsStatusFor "$target_monitor")
+[[ $(jq -r '.open' <<<"$target_settings") == true ]] || {
+  printf 'Monitor-targeted settings did not open: %s\n' "$target_settings" >&2
+  exit 1
+}
+$qs_command ipc --pid "$shell_pid" call app-drawer closeSettings >/dev/null
+
+$qs_command ipc --pid "$shell_pid" call app-drawer setExpanded false >/dev/null
+collapsed=$(wait_for_state false) || { printf 'Drawer did not collapse.\n' >&2; exit 1; }
+[[ $(jq -r '.healthy' <<<"$collapsed") == true ]] || {
+  printf 'Drawer reported an unhealthy mutation: %s\n' "$collapsed" >&2
+  exit 1
+}
+collapsed_visible=$(jq -r '.visibleEntries' <<<"$collapsed")
+saved_entries=$(jq -r '.savedEntries' <<<"$collapsed")
+always_visible=$(jq -r '.alwaysVisible | length' <<<"$collapsed")
+[[ $saved_entries -gt 0 && $collapsed_visible -ge $((saved_entries + 1)) ]] || {
+  printf 'Mounted per-monitor layout did not retain the saved entries and toggle: %s\n' "$collapsed" >&2
+  exit 1
+}
+
+pin_candidate=$(jq -r '.savedIds[0] // ""' <<<"$collapsed")
+if [[ -n $pin_candidate ]]; then
+  $qs_command ipc --pid "$shell_pid" call app-drawer pin "$pin_candidate" >/dev/null
+  pinned=$(status)
+  [[ $(jq -r --arg id "$pin_candidate" '.alwaysVisible | index($id) != null' <<<"$pinned") == true ]] || {
+    printf 'Pin IPC did not persist its selection: %s\n' "$pinned" >&2
+    exit 1
+  }
+  $qs_command ipc --pid "$shell_pid" call app-drawer unpin "$pin_candidate" >/dev/null
+  unpinned=$(status)
+  [[ $(jq -r --arg id "$pin_candidate" '.alwaysVisible | index($id) == null' <<<"$unpinned") == true ]] || {
+    printf 'Unpin IPC did not restore its selection: %s\n' "$unpinned" >&2
+    exit 1
+  }
+fi
+
+$qs_command ipc --pid "$shell_pid" call app-drawer setExpanded true >/dev/null
+expanded=$(wait_for_state true) || { printf 'Drawer did not expand.\n' >&2; exit 1; }
+expanded_visible=$(jq -r '.visibleEntries' <<<"$expanded")
+[[ $(jq -r '.healthy' <<<"$expanded") == true && $expanded_visible -ge $((saved_entries + 1)) ]] || {
+  printf 'Expanded layout did not restore its saved entries: %s\n' "$expanded" >&2
+  exit 1
+}
+
+printf 'App Drawer live lifecycle passed: collapsed=%s expanded=%s\n' "$collapsed" "$expanded"

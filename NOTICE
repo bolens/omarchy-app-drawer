@@ -1,0 +1,12 @@
+App Drawer
+
+This project is a modified hard fork of OmaBar Drawer:
+https://github.com/amitcpatel/omabar-drawer
+
+OmaBar Drawer was created by Amit Patel and derives portions of Omarchy's
+bar, whose copyright is held by David Heinemeier Hansson. Their copyright
+notices and the complete MIT license are preserved in LICENSE.
+
+The hard-fork identity, architecture, service, settings, IPC, tests, and later
+modifications are maintained by bolens. “App Drawer” and the
+io.github.bolens.app-drawer identifier distinguish this fork from upstream.

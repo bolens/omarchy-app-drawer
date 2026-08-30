@@ -1,12 +1,39 @@
 {
   "schemaVersion": 1,
-  "id": "io.github.amitcpatel.omabar-drawer",
-  "name": "OmaBar Drawer",
-  "version": "1.0.3",
-  "author": "Amit Patel",
-  "description": "An Ice-style Omarchy bar that collapses right-side widgets behind one icon.",
-  "kinds": ["bar"],
+  "id": "io.github.bolens.app-drawer",
+  "name": "App Drawer",
+  "version": "2.6.0",
+  "author": "bolens",
+  "license": "MIT",
+  "description": "A per-monitor, animated Omarchy bar drawer with click or hover behavior, appearance controls, and deterministic IPC.",
+  "kinds": ["bar-widget", "service"],
+  "keepLoaded": true,
   "entryPoints": {
-    "bar": "Bar.qml"
+    "barWidget": "BarWidget.qml",
+    "service": "Service.qml"
+  },
+  "barWidget": {
+    "displayName": "App Drawer",
+    "description": "Reveal or collapse right-side widgets independently on each monitor without replacing Omarchy's stock bar.",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": {
+      "expandedGlyph": "󰅂",
+      "collapsedGlyph": "󰅁",
+      "iconSize": 14,
+      "horizontalMargin": 8,
+      "verticalPadding": 6,
+      "expandedColorRole": "accent",
+      "collapsedColorRole": "foreground",
+      "showTooltip": true,
+      "leftClickAction": "toggle",
+      "middleClickAction": "settings",
+      "animationEnabled": true,
+      "animationDuration": 250,
+      "animationStyle": "taskbar",
+      "animationCurve": "smooth",
+      "hoverCollapseDelay": 350
+    }
   }
 }

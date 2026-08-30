@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+qs_command=${OMABAR_QS_COMMAND:-qs}
+shell_pid=""
+while read -r candidate; do
+  if [[ $($qs_command ipc --pid "$candidate" call shell ping 2>/dev/null || true) == ok ]] &&
+     $qs_command ipc --pid "$candidate" call app-drawer status >/dev/null 2>&1; then shell_pid=$candidate; break; fi
+done < <($qs_command list --all | awk '/Process ID:/ {print $3}')
+[[ -n $shell_pid ]] || { printf 'No live drawer shell found.\n' >&2; exit 1; }
+initial=$($qs_command ipc --pid "$shell_pid" call app-drawer status)
+initial_expanded=$(jq -r '.expanded' <<<"$initial")
+initial_monitor_states=$(jq -c '.monitorStates' <<<"$initial")
+primary_screen=$(jq -r '.presentations | map(select(.screen != "unknown")) | sort_by(.screen) | .[0].screen // ""' <<<"$initial")
+[[ -n $primary_screen ]] || { printf 'No registered monitor presentation.\n' >&2; exit 1; }
+candidate=$(jq -r '.savedIds[0]' <<<"$initial")
+initial_pinned=$(jq -r --arg id "$candidate" '.alwaysVisible | index($id) != null' <<<"$initial")
+restore() {
+  if [[ $initial_pinned == true ]]; then
+    $qs_command ipc --pid "$shell_pid" call app-drawer pin "$candidate" >/dev/null 2>&1 || true
+  else
+    $qs_command ipc --pid "$shell_pid" call app-drawer unpin "$candidate" >/dev/null 2>&1 || true
+  fi
+  if [[ $(jq 'length' <<<"$initial_monitor_states") -gt 0 ]]; then
+    while IFS=$'\t' read -r screen expanded; do
+      $qs_command ipc --pid "$shell_pid" call app-drawer setMonitorExpanded "$screen" "$expanded" >/dev/null 2>&1 || true
+    done < <(jq -r 'to_entries[] | [.key,.value] | @tsv' <<<"$initial_monitor_states")
+  else
+    $qs_command ipc --pid "$shell_pid" call app-drawer setExpanded "$initial_expanded" >/dev/null 2>&1 || true
+  fi
+  sleep 0.6
+}
+trap restore EXIT INT TERM
+$qs_command ipc --pid "$shell_pid" call app-drawer collapse >/dev/null
+output=$(mktemp); trap 'rm -f -- "$output"; restore' EXIT INT TERM
+seq 1 100 | xargs -P 16 -I{} "$qs_command" ipc --pid "$shell_pid" call app-drawer toggle >"$output"
+[[ $(wc -l <"$output") -eq 100 ]] || { printf 'Lost concurrent IPC responses.\n' >&2; exit 1; }
+inflight=$($qs_command ipc --pid "$shell_pid" call app-drawer status)
+[[ $(jq -r --arg screen "$primary_screen" '.monitorStates[$screen]' <<<"$inflight") == false && $(jq -r '.healthy' <<<"$inflight") == true ]] || {
+  printf 'Concurrent toggle intent parity failed: %s\n' "$inflight" >&2; exit 1;
+}
+after=$inflight
+[[ $(jq -r --arg screen "$primary_screen" '.monitorStates[$screen]' <<<"$after") == false ]] || {
+  printf 'Concurrent toggle parity failed: %s\n' "$after" >&2; exit 1;
+}
+seq 1 32 | xargs -P 12 -I{} "$qs_command" ipc --pid "$shell_pid" call app-drawer pin "$candidate" >/dev/null
+pinned=$($qs_command ipc --pid "$shell_pid" call app-drawer status)
+[[ $(jq -r --arg id "$candidate" '[.alwaysVisible[]|select(.==$id)]|length' <<<"$pinned") -eq 1 ]] || {
+  printf 'Concurrent idempotent pin failed: %s\n' "$pinned" >&2; exit 1;
+}
+kill -0 "$shell_pid"
+printf 'App Drawer live concurrency stress passed (100 toggles, 32 pins).\n'

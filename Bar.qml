@@ -100,8 +100,8 @@ Item {
   property var barMoveScreen: null
   property var clickTargets: []
   property var moduleSlots: []
-  // Ice-style drawer: keep the right-hand widgets mounted, but collapse their
-  // layout space until the user asks to see them.
+  // Ice-style drawer. Hidden presentation instances are unloaded while the
+  // drawer is collapsed; plugin service entry points remain alive in the host.
   property bool widgetDrawerExpanded: false
   readonly property var alwaysVisibleWidgetIds: {
     var values = barConfig && Array.isArray(barConfig.drawerAlwaysVisible)
@@ -409,6 +409,38 @@ Item {
       var pinned = alwaysVisibleWidgetIds.indexOf(entryId(entry)) !== -1
       return alwaysVisible ? pinned : !pinned
     })
+  }
+
+  function drawerRuntimeState() {
+    var hiddenIds = rightEntries(false).map(function(entry) { return entryId(entry) })
+    var mountedHiddenInstances = 0
+    var mountedRightInstances = 0
+    for (var index = 0; index < moduleSlots.length; index++) {
+      var slot = moduleSlots[index]
+      if (!slot || slot.region !== "right" || !slot.activeItem) continue
+      mountedRightInstances++
+      if (hiddenIds.indexOf(slot.moduleName) !== -1) mountedHiddenInstances++
+    }
+    return {
+      expanded: widgetDrawerExpanded,
+      hiddenEntries: hiddenIds.length,
+      mountedHiddenInstances: mountedHiddenInstances,
+      mountedRightInstances: mountedRightInstances,
+      screenCount: Quickshell.screens.length
+    }
+  }
+
+  IpcHandler {
+    target: "app-drawer"
+    function status(): string { return JSON.stringify(root.drawerRuntimeState()) }
+    function setExpanded(expanded: bool): string {
+      root.widgetDrawerExpanded = expanded
+      return expanded ? "expanded" : "collapsed"
+    }
+    function toggle(): string {
+      root.widgetDrawerExpanded = !root.widgetDrawerExpanded
+      return root.widgetDrawerExpanded ? "expanded" : "collapsed"
+    }
   }
 
   function widgetDisplayName(entry) {
@@ -1174,7 +1206,6 @@ Item {
           }
 
           AlwaysVisibleRightModules {}
-
           WidgetDrawerToggle {}
         }
       }
@@ -1217,7 +1248,6 @@ Item {
           }
 
           AlwaysVisibleRightModules {}
-
           WidgetDrawerToggle {}
         }
       }
@@ -1389,59 +1419,63 @@ Item {
       else if (button === Qt.RightButton) managerOpen = !managerOpen
     }
 
-    PopupCard {
-      id: managerPopup
-      anchorItem: drawerToggle
-      owner: drawerToggle
-      bar: root
-      open: drawerToggle.managerOpen
-      contentWidth: managerPopup.fittedContentWidth(Style.space(320))
-      contentHeight: managerPopup.fittedContentHeight(widgetList.implicitHeight, Style.space(520))
+    Loader {
+      active: drawerToggle.managerOpen
 
-      Flickable {
-        anchors.fill: parent
-        clip: true
-        contentWidth: width
-        contentHeight: widgetList.implicitHeight
-        boundsBehavior: Flickable.StopAtBounds
+      sourceComponent: PopupCard {
+        id: managerPopup
+        anchorItem: drawerToggle
+        owner: drawerToggle
+        bar: root
+        open: true
+        contentWidth: managerPopup.fittedContentWidth(Style.space(320))
+        contentHeight: managerPopup.fittedContentHeight(widgetList.implicitHeight, Style.space(520))
 
-        Column {
-          id: widgetList
-          width: parent.width
-          spacing: Style.space(6)
+        Flickable {
+          anchors.fill: parent
+          clip: true
+          contentWidth: width
+          contentHeight: widgetList.implicitHeight
+          boundsBehavior: Flickable.StopAtBounds
 
-          Text {
-            text: "Always visible"
-            textFormat: Text.PlainText
-            color: root.foreground
-            font.family: root.fontFamily
-            font.pixelSize: Style.font.body
-            font.bold: true
-          }
-
-          Text {
+          Column {
+            id: widgetList
             width: parent.width
-            text: "Choose widgets that stay outside the drawer. All widgets are hidden by default."
-            textFormat: Text.PlainText
-            color: Qt.darker(root.foreground, 1.4)
-            font.family: root.fontFamily
-            font.pixelSize: Style.font.caption
-            wrapMode: Text.WordWrap
-          }
+            spacing: Style.space(6)
 
-          Repeater {
-            model: root.layoutEntries("right")
+            Text {
+              text: "Always visible"
+              textFormat: Text.PlainText
+              color: root.foreground
+              font.family: root.fontFamily
+              font.pixelSize: Style.font.body
+              font.bold: true
+            }
 
-            PlainTextToggle {
-              required property var modelData
-              width: widgetList.width
-              implicitHeight: Style.space(46)
-              label: root.widgetDisplayName(modelData)
-              description: root.entryId(modelData)
-              checked: root.alwaysVisibleWidgetIds.indexOf(root.entryId(modelData)) !== -1
-              titleSize: Style.font.bodySmall
-              descriptionSize: Style.font.caption
-              onClicked: root.setWidgetAlwaysVisible(root.entryId(modelData), !checked)
+            Text {
+              width: parent.width
+              text: "Choose widgets that stay outside the drawer. All widgets are hidden by default."
+              textFormat: Text.PlainText
+              color: Qt.darker(root.foreground, 1.4)
+              font.family: root.fontFamily
+              font.pixelSize: Style.font.caption
+              wrapMode: Text.WordWrap
+            }
+
+            Repeater {
+              model: root.layoutEntries("right")
+
+              PlainTextToggle {
+                required property var modelData
+                width: widgetList.width
+                implicitHeight: Style.space(46)
+                label: root.widgetDisplayName(modelData)
+                description: root.entryId(modelData)
+                checked: root.alwaysVisibleWidgetIds.indexOf(root.entryId(modelData)) !== -1
+                titleSize: Style.font.bodySmall
+                descriptionSize: Style.font.caption
+                onClicked: root.setWidgetAlwaysVisible(root.entryId(modelData), !checked)
+              }
             }
           }
         }

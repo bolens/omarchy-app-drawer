@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="App Drawer is a compact, per-monitor animated drawer for Omarchy Shell's stock bar.">
+  <meta name="theme-color" content="#160d24">
+  <meta property="og:title" content="App Drawer for Omarchy">
+  <meta property="og:description" content="Keep the stock bar. Reveal the rest only when you need it.">
+  <meta property="og:image" content="https://bolens.github.io/omarchy-app-drawer/preview.png">
+  <title>App Drawer · Omarchy</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="brand" href="#top"><span class="brand-mark">‹›</span> App Drawer</a>
+    <nav aria-label="Primary"><a href="#features">Features</a><a href="#appearance">Appearance</a><a href="#technical">Technical</a><a class="nav-cta" href="https://github.com/bolens/omarchy-app-drawer">GitHub ↗</a></nav>
+  </header>
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow">Omarchy Shell plugin · v{{VERSION}}</p>
+        <h1>Keep the bar.<br><span>Reveal the rest.</span></h1>
+        <p class="lede">A fast, per-monitor drawer that keeps Omarchy's stock bar alive and slides secondary widgets into view exactly when you ask.</p>
+        <div class="actions"><a class="button primary" href="#install">Install App Drawer</a><a class="button ghost" href="#appearance">Explore motion</a></div>
+        <ul class="trust"><li>No extra shell</li><li>No telemetry</li><li>MIT licensed</li></ul>
+      </div>
+      <div class="drawer-demo" aria-label="Stylized drawer interaction preview">
+        <div class="demo-label">RIGHT-SIDE WIDGETS</div>
+        <div class="bar-shell"><span>◇</span><span class="spacer" aria-hidden="true">&#8203;</span><div class="reveal-track"><span>◉</span><span>󰖩</span><span>󰂯</span><span>󰐥</span></div><button aria-label="Drawer toggle">‹</button></div>
+        <div class="motion-line"><span aria-hidden="true">&#8203;</span></div>
+        <p>Independent state on every monitor. Hover or click. Your choice.</p>
+      </div>
+    </section>
+    <section class="proof"><div><strong>5</strong><span>reveal styles</span></div><div><strong>250ms</strong><span>balanced default</span></div><div><strong>1</strong><span>shared service</span></div><div><strong>0</strong><span>extra Quickshells</span></div></section>
+    <section class="section" id="features">
+      <div class="section-heading"><p class="eyebrow">Purpose-built restraint</p><h2>Less bar, without less function.</h2><p>Everything remains mounted and responsive. App Drawer changes presentation—not ownership, startup, or your existing widgets.</p></div>
+      <div class="feature-grid">
+        <article class="feature feature-wide"><span class="icon">↔</span><h3>Per-monitor control</h3><p>Leave one output expanded, collapse another, or mix click and hover behavior. State follows the monitor name, not a fragile numeric ID.</p></article>
+        <article class="feature"><span class="icon">≈</span><h3>Smooth motion</h3><p>Taskbar wipe, cascade, soft cascade, uniform reveal, and instant modes with configurable curves and duration.</p></article>
+        <article class="feature"><span class="icon">⌖</span><h3>Always-visible pins</h3><p>Keep essentials such as power or battery outside the drawer while secondary widgets remain tucked away.</p></article>
+        <article class="feature"><span class="icon">◌</span><h3>Hover that understands intent</h3><p>The drawer remains open while the pointer crosses the entire revealed bar, with a bounded close delay.</p></article>
+        <article class="feature"><span class="icon">◇</span><h3>Stock-bar native</h3><p>No replacement bar and no duplicate services. Existing taskbar, backgrounds, tray items, and shell state stay intact.</p></article>
+      </div>
+    </section>
+    <section class="showcase" id="appearance">
+      <div class="showcase-copy"><p class="eyebrow">Appearance and behavior</p><h2>Motion with a point of view.</h2><p>Choose glyph direction, spacing, color roles, activation behavior, timing, and reveal choreography. Settings are compact, scroll-safe, and scoped where their meaning belongs.</p><div class="chips"><span>Taskbar wipe</span><span>Soft cascade</span><span>Gentle curve</span><span>Hover reveal</span></div></div>
+      <figure><img src="preview.png" alt="App Drawer collapsed and expanded across the Omarchy bar" width="1800" height="504"><figcaption>Real App Drawer states in Omarchy Shell.</figcaption></figure>
+    </section>
+    <section class="section technical" id="technical">
+      <div class="section-heading"><p class="eyebrow">Designed to stay boring underneath</p><h2>Deterministic where it matters.</h2></div>
+      <div class="flow"><div><b>Bar widgets</b><span>Monitor-local presentation</span></div><i>→</i><div><b>Shared service</b><span>State, IPC, persistence</span></div><i>→</i><div><b>Omarchy shell.json</b><span>Bounded durable settings</span></div></div>
+      <div class="detail-grid"><article><h3>Race-resistant lifecycle</h3><p>Generation-tagged registrations, bounded retries, field-level coalescing, and exact monitor routing prevent stale instances from winning.</p></article><article><h3>Guarded IPC</h3><p>Versioned status, monitor controls, strict modes, normalized payloads, and visible commit failures make automation inspectable.</p></article><article><h3>Tested as a shell citizen</h3><p>Pure invariants, isolated QML harnesses, crash guards, live IPC checks, and concurrent stress preserve the persistent shell.</p></article></div>
+    </section>
+    <section class="install" id="install">
+      <div><p class="eyebrow">Install</p><h2>Two commands. Stock bar retained.</h2><p>Requires Omarchy Quattro 4.0 or newer.</p></div>
+      <div class="terminal"><div class="terminal-head"><span aria-hidden="true">•</span><span aria-hidden="true">•</span><span aria-hidden="true">•</span><button data-copy="#install-code">Copy</button></div><pre id="install-code"><code>omarchy plugin add https://github.com/bolens/omarchy-app-drawer.git --enable<br>scripts/migrate-to-stock-bar</code></pre></div>
+    </section>
+    <section class="section docs"><div class="section-heading"><p class="eyebrow">Project documentation</p><h2>Everything needed to operate and extend it.</h2></div><div class="link-grid"><a href="https://github.com/bolens/omarchy-app-drawer#configuration-and-privacy"><b>Configuration</b><span>Behavior, privacy, and persistence →</span></a><a href="https://github.com/bolens/omarchy-app-drawer/blob/main/TESTING.md"><b>Testing</b><span>Local, QML, live, and stress checks →</span></a><a href="https://github.com/bolens/omarchy-app-drawer/blob/main/ARCHITECTURE.md"><b>Architecture</b><span>Ownership and lifecycle boundaries →</span></a><a href="https://github.com/bolens/omarchy-app-drawer/blob/main/SECURITY.md"><b>Security</b><span>Trust model and private reporting →</span></a></div></section>
+  </main>
+  <footer><div><span class="brand-mark">‹›</span><b>App Drawer</b></div><p>Modified hard fork of OmaBar Drawer. MIT licensed.</p><div><a href="https://github.com/bolens/omarchy-app-drawer">Source</a><a href="https://github.com/bolens/omarchy-app-drawer/issues">Issues</a><a href="https://omarchy.org">Omarchy</a></div></footer>
+  <script src="site.js"></script>
+</body>
+</html>
