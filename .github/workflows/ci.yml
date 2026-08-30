@@ -31,7 +31,7 @@ jobs:
       - name: Install archive validation tools
         run: sudo apt-get update && sudo apt-get install --yes jq shellcheck
       - name: Check shell scripts
-        run: shellcheck scripts/*.sh scripts/deploy-shell-runtime scripts/migrate-to-stock-bar scripts/verify-live tests/run_all.sh tests/run_qml_runtime.sh tests/verify-stress
+        run: shellcheck scripts/*.sh scripts/capture-screenshots scripts/deploy-shell-runtime scripts/migrate-to-stock-bar scripts/verify-live tests/run_all.sh tests/run_qml_runtime.sh tests/verify-stress
       - name: Validate distributable plugin
         run: |
           mkdir "$RUNNER_TEMP/plugin"

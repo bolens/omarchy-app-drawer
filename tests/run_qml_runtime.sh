@@ -4,7 +4,7 @@ plugin_dir=$(cd -- "$(dirname -- "$0")/.." && pwd)
 requested=("$@")
 runtime_dir=$(mktemp -d)
 active_harness=""
-# shellcheck disable=SC2329 # Invoked by the signal and exit trap below.
+# shellcheck disable=SC2317,SC2329 # Invoked by the signal and exit trap below.
 cleanup_runtime() {
   if [[ -n $active_harness ]]; then
     "$quickshell_bin" kill --path "$active_harness" --any-display >/dev/null 2>&1 || true
