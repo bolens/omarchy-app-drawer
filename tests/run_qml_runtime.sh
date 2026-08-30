@@ -24,7 +24,7 @@ runtime_root=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/quickshell
 }
 
 leaked_runtime_processes() {
-  quickshell list --all 2>/dev/null | awk -v root="$runtime_dir/" '
+  "$quickshell_bin" list --all 2>/dev/null | awk -v root="$runtime_dir/" '
     /^Process ID:/ { pid=$3 }
     /^Config path:/ {
       sub(/^[[:space:]]+/, "")
