@@ -22,6 +22,29 @@ runtime_root=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/quickshell
   printf 'Quickshell runtime directory is not writable: %s\n' "$runtime_root" >&2
   exit 2
 }
+
+leaked_runtime_processes() {
+  quickshell list --all 2>/dev/null | awk -v root="$runtime_dir/" '
+    /^Process ID:/ { pid=$3 }
+    /^Config path:/ {
+      sub(/^[[:space:]]+/, "")
+      path=$0
+      sub(/^Config path: /, "", path)
+      if (index(path, root) == 1) print pid "\t" path
+    }
+  '
+}
+
+wait_for_runtime_teardown() {
+  local leaks
+  for _attempt in {1..100}; do
+    leaks=$(leaked_runtime_processes || true)
+    [[ -z $leaks ]] && return 0
+    sleep 0.02
+  done
+  printf '%s\n' "$leaks"
+  return 1
+}
 find "$plugin_dir" -maxdepth 1 -type f \( -name '*.qml' -o -name '*.js' \) -exec ln -s -- '{}' "$runtime_dir/" \;
 find "$plugin_dir/tests/qml" -maxdepth 1 -type f -name 'Runtime*Test.qml' -exec ln -s -- '{}' "$runtime_dir/" \;
 ln -s -- "$shell_root/Commons" "$runtime_dir/Commons"
@@ -41,6 +64,11 @@ run_harness() {
   set -e
   "$quickshell_bin" kill --path "$active_harness" --any-display >/dev/null 2>&1 || true
   active_harness=""
+  leaks=$(wait_for_runtime_teardown || true)
+  if [[ -n $leaks ]]; then
+    printf 'Leaked Quickshell runtime harnesses after %s:\n%s\n' "$file" "$leaks" >&2
+    return 1
+  fi
   [[ $status -eq 0 ]] || { printf '%s\n' "$output" >&2; return "$status"; }
   grep -Eq "(^|[[:space:]])${marker}([[:space:]]|$)" <<<"$output" || {
     printf '%s did not emit %s\n%s\n' "$file" "$marker" "$output" >&2; return 1;
@@ -58,4 +86,9 @@ run_harness RuntimeSettingsNavigationTest.qml DRAWER_QML_SETTINGS_NAVIGATION_OK 
 run_harness RuntimeIpcTest.qml DRAWER_QML_IPC_OK || failures=1
 run_harness RuntimeMonitorStateTest.qml DRAWER_QML_MONITOR_STATE_OK || failures=1
 run_harness RuntimeMutationTest.qml DRAWER_QML_MUTATION_OK || failures=1
+runtime_leaks=$(leaked_runtime_processes || true)
+if [[ -n $runtime_leaks ]]; then
+  printf 'Leaked Quickshell runtime harnesses:\n%s\n' "$runtime_leaks" >&2
+  failures=1
+fi
 exit "$failures"

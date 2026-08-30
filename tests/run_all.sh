@@ -4,6 +4,21 @@ set -euo pipefail
 plugin_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 cd "$plugin_dir"
 
+persistent_shell_inventory() {
+  quickshell list --all 2>/dev/null | awk '
+    /^Process ID:/ { pid=$3 }
+    /^Config path:/ {
+      sub(/^[[:space:]]+/, "")
+      path=$0
+      sub(/^Config path: /, "", path)
+      if (index(path, "/tmp/") != 1) {
+        print "Process ID: " pid
+        print "Config path: " path
+      }
+    }
+  ' | sort
+}
+
 node tests/model.test.js
 node tests/property.test.js
 node tests/manifest.test.js
@@ -23,9 +38,9 @@ if [[ ${OMABAR_QML_TESTS:-auto} == always ]] ||
    { [[ ${OMABAR_QML_TESTS:-auto} == auto ]] &&
      [[ -S ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/wayland-1 ]] &&
      [[ -w ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/quickshell ]]; }; then
-  shell_inventory_before=$(quickshell list --all 2>/dev/null | awk '/Process ID:|Config path:/{sub(/^[[:space:]]+/,""); print}' | sort)
+  shell_inventory_before=$(persistent_shell_inventory)
   tests/run_qml_runtime.sh
-  shell_inventory_after=$(quickshell list --all 2>/dev/null | awk '/Process ID:|Config path:/{sub(/^[[:space:]]+/,""); print}' | sort)
+  shell_inventory_after=$(persistent_shell_inventory)
   if [[ $shell_inventory_after != "$shell_inventory_before" ]]; then
     printf 'Persistent Quickshell inventory changed across isolated QML tests.\nBefore:\n%s\nAfter:\n%s\n' \
       "$shell_inventory_before" "$shell_inventory_after" >&2

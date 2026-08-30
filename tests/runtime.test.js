@@ -93,6 +93,11 @@ assert.match(widget, /open:\s*settingsOpen && settingsPanel\.visible/,
   "settings status must distinguish requested state from rendered visibility")
 assert.doesNotMatch(widget, /bar\.accent/,
   "the supported stock bar has no accent property")
+const qmlRuntimeRunner = read("tests/run_qml_runtime.sh")
+assert.match(qmlRuntimeRunner, /leaked_runtime_processes\(\)/,
+  "the isolated runtime runner must detect only its own leaked Quickshell harnesses")
+assert.match(qmlRuntimeRunner, /Leaked Quickshell runtime harnesses:/,
+  "the isolated runtime runner must fail with explicit leak evidence")
 const appearanceSettings = read("DrawerAppearanceSettings.qml")
 for (const key of ["expandedGlyph", "collapsedGlyph", "iconSize", "horizontalMargin", "verticalPadding", "expandedColorRole", "collapsedColorRole", "showTooltip", "leftClickAction", "middleClickAction", "animationEnabled", "animationDuration", "animationStyleDropdown", "animationCurveDropdown", "monitorModeDropdown", "hoverCollapseDelay"])
   assert.match(appearanceSettings, new RegExp(key), `appearance surface must expose ${key}`)
