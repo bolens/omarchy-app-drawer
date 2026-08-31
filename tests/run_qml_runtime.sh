@@ -86,6 +86,7 @@ run_harness RuntimeSettingsNavigationTest.qml DRAWER_QML_SETTINGS_NAVIGATION_OK 
 run_harness RuntimeIpcTest.qml DRAWER_QML_IPC_OK || failures=1
 run_harness RuntimeMonitorStateTest.qml DRAWER_QML_MONITOR_STATE_OK || failures=1
 run_harness RuntimeMutationTest.qml DRAWER_QML_MUTATION_OK || failures=1
+run_harness RuntimeAccessibilityTest.qml DRAWER_QML_ACCESSIBILITY_OK || failures=1
 runtime_leaks=$(leaked_runtime_processes || true)
 if [[ -n $runtime_leaks ]]; then
   printf 'Leaked Quickshell runtime harnesses:\n%s\n' "$runtime_leaks" >&2

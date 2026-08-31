@@ -8,6 +8,22 @@ const service = read("Service.qml")
 const widget = read("BarWidget.qml")
 const model = read("Model.js")
 const legacyBar = read("Bar.qml")
+const button = read("Button.qml")
+const widgetButton = read("WidgetButton.qml")
+const plainTextToggle = read("PlainTextToggle.qml")
+
+assert.match(button, /focusable:\s*true[\s\S]*Accessible\.role:\s*Accessible\.Button[\s\S]*Accessible\.onPressAction/,
+  "local buttons must be keyboard-focusable and expose an assistive press action")
+assert.match(button, /function triggerAccessiblePress\(\)[\s\S]*if \(!enabled\) return false/,
+  "assistive activation must honor disabled button state")
+assert.match(widgetButton, /activeFocusOnTab:[\s\S]*Keys\.onSpacePressed:[\s\S]*Accessible\.name:[\s\S]*Accessible\.onPressAction/,
+  "drawer bar targets must support keyboard and assistive activation")
+assert.match(widget, /if \(bar && bar\.vertical\)[\s\S]*slot\.height = Qt\.binding\(root\.implicitHeightBinding\(slot\)\)/,
+  "vertical drawer transitions must restore height rather than horizontal width")
+assert.match(widget, /var extent = bar && bar\.vertical \? slot\.implicitHeight : slot\.implicitWidth/,
+  "drawer reveal geometry must follow the active bar axis")
+assert.match(plainTextToggle, /Accessible\.role:\s*Accessible\.CheckBox[\s\S]*Accessible\.checked:\s*checked/,
+  "settings toggles must expose their checked state")
 
 for (const [name, source] of [["BarWidget.qml",widget],["Service.qml",service]]) {
   assert.doesNotMatch(source,/\bProcess\s*\{|execDetached|\bquickshell\b|\bqs\s+/, `${name} must not launch another Quickshell or subprocess`)
