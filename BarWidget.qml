@@ -24,6 +24,10 @@ Item {
   property real lastAnimationTotalExtent: 0
   property int bindingAttempts: 0
   property bool bindingDeferred: false
+  property int slotBindingGeneration: 0
+  property real previousBindingTotalExtent: -1
+  property int stableBindingMeasurements: 0
+  property real pendingRevealProgress: -1
   readonly property var presentationScreen: root.QsWindow.window ? root.QsWindow.window.screen : null
   readonly property string presentationScreenName: presentationScreen ? presentationScreen.name : "unknown"
   readonly property bool localExpanded: drawerService ? drawerService.expandedFor(presentationScreenName) : true
@@ -199,10 +203,16 @@ Item {
     restoreTransitionSlots()
     lastAnimationSlotCount = 0
     lastAnimationTotalExtent = 0
+    slotBindingGeneration++
+    var generation = slotBindingGeneration
     if (!drawerService) return
+    Qt.callLater(function() { root.attachSlotBindings(generation) })
+  }
+  function attachSlotBindings(generation) {
+    if (generation !== slotBindingGeneration || !drawerService) return
     var slots = localTransitionSlots()
     lastAnimationSlotCount = slots.length
-    if (slots.length === 0) return
+    if (slots.length === 0) { finishSlotBindingMeasurement(); return }
     transitionSlots = slots
     var extents = []
     for (var index = 0; index < slots.length; index++) {
@@ -224,6 +234,28 @@ Item {
         slot.width = Qt.binding(root.animatedWidthBinding(slot, extent, trailingExtent, totalExtent))
       trailingExtent += extent
     }
+    finishSlotBindingMeasurement()
+  }
+  function finishSlotBindingMeasurement() {
+    if (previousBindingTotalExtent >= 0
+        && Math.abs(lastAnimationTotalExtent - previousBindingTotalExtent) < 0.5)
+      stableBindingMeasurements++
+    else stableBindingMeasurements = 0
+    previousBindingTotalExtent = lastAnimationTotalExtent
+    bindingAttempts++
+    if (pendingRevealProgress >= 0) {
+      var target = pendingRevealProgress
+      pendingRevealProgress = -1
+      revealProgress = target
+    }
+    if ((transitionSlots.length < expectedTransitionSlotCount() || stableBindingMeasurements < 2)
+        && bindingAttempts < 20)
+      slotBindingTimer.restart()
+  }
+  function requestRevealProgress(target) {
+    if (transitionSlots.length > 0) { revealProgress = target; return }
+    pendingRevealProgress = target
+    applySlotBindings()
   }
   function transitionInProgress() {
     return animationActive && revealProgress > 0 && revealProgress < 1
@@ -236,12 +268,13 @@ Item {
     }
     bindingDeferred = false
     bindingAttempts = 0
+    previousBindingTotalExtent = -1
+    stableBindingMeasurements = 0
     slotBindingTimer.restart()
   }
 
   onLocalExpandedChanged: {
-    applySlotBindings()
-    revealProgress = localExpanded ? 1 : 0
+    requestRevealProgress(localExpanded ? 1 : 0)
   }
 
   implicitWidth: button.implicitWidth
@@ -318,10 +351,8 @@ Item {
     interval: 50
     repeat: false
     onTriggered: {
-      root.applySlotBindings()
-      root.bindingAttempts++
-      if (root.transitionSlots.length < root.expectedTransitionSlotCount()
-          && root.bindingAttempts < 20) restart()
+      if (root.transitionInProgress()) root.bindingDeferred = true
+      else root.applySlotBindings()
     }
   }
 
