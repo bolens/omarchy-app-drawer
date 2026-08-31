@@ -33,7 +33,7 @@ node tests/site.test.js
 node tests/fleet_hardening.test.js
 omarchy_path=${OMARCHY_PATH:-/home/panda/.local/share/omarchy-overlay}
 qmllint_bin=${QMLLINT:-qmllint}
-"$qmllint_bin" -I "$omarchy_path/shell" BarWidget.qml DrawerSettings.qml DrawerAppearanceSettings.qml Service.qml Bar.qml
+"$qmllint_bin" -I "$omarchy_path/shell" Button.qml WidgetButton.qml PlainTextToggle.qml BarWidget.qml DrawerSettings.qml DrawerAppearanceSettings.qml Service.qml Bar.qml
 if [[ ${OMARCHY_SKIP_VALIDATE:-0} != 1 ]]; then omarchy plugin validate "$plugin_dir"; fi
 
 if [[ ${OMABAR_QML_TESTS:-auto} == always ]] ||

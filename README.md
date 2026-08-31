@@ -13,6 +13,7 @@ A compact, per-monitor drawer for Omarchy Shell's stock bar. It keeps the stock 
 - Smooth, Quick, Gentle, and Linear motion curves with a 250 ms default and topology-stable slot bindings.
 - Configurable glyphs, spacing, colors, actions, animation style, duration, curve, and hover-close delay.
 - Always-visible pins for selected right-side widgets.
+- Keyboard-focusable controls and named assistive-technology actions for settings and bar interaction.
 - Lightweight bar-widget and service entry points; they do not replace the stock bar or launch another Quickshell.
 - Deterministic state updates, bounded attachment retries, guarded settings loading, and compatibility IPC.
 
