@@ -1056,6 +1056,11 @@ Item {
   component BarPanel: PanelWindow {
     id: barWindow
 
+    readonly property var hyprMonitor: Hyprland.monitorFor(barWindow.screen)
+    readonly property bool fullscreenCovered: !!(hyprMonitor && hyprMonitor.activeWorkspace
+      && hyprMonitor.activeWorkspace.hasFullscreen === true)
+    readonly property bool inputSuppressed: root.barHidden || fullscreenCovered
+
     // Hiding parks the bar just past its screen edge instead of unmapping it.
     // Unmapping frees the layer surface and the whole scene graph, so every
     // reveal has to rebuild them — new surface, re-shaped glyphs, re-uploaded
@@ -1063,6 +1068,10 @@ Item {
     // keeps the surface alive, so showing is only a margin change.
     visible: !remapGuard.remapping
     exclusionMode: root.barHidden ? ExclusionMode.Ignore : ExclusionMode.Auto
+    mask: Region {
+      width: barWindow.inputSuppressed ? 0 : barWindow.width
+      height: barWindow.inputSuppressed ? 0 : barWindow.height
+    }
 
     ScreenMoveRemap {
       id: remapGuard
