@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+detect_only=false
+if [[ ${1:-} == --detect ]]; then detect_only=true; shift; fi
+[[ $# -eq 0 ]] || { printf 'Usage: scripts/verify-live [--detect]\n' >&2; exit 2; }
+
 qs_command=${OMABAR_QS_COMMAND:-qs}
 command -v "$qs_command" >/dev/null || { printf 'Missing required command: %s\n' "$qs_command" >&2; exit 127; }
 command -v jq >/dev/null || { printf 'Missing required command: jq\n' >&2; exit 127; }
@@ -15,6 +19,7 @@ while read -r candidate; do
   fi
 done < <($qs_command list --all | awk '/Process ID:/ { print $3 }')
 [[ -n $shell_pid ]] || { printf 'No IPC-ready App Drawer shell found.\n' >&2; exit 1; }
+if [[ $detect_only == true ]]; then exit 0; fi
 
 status() { $qs_command ipc --pid "$shell_pid" call app-drawer status; }
 wait_for_state() {
