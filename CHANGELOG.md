@@ -5,11 +5,19 @@ All notable changes to App Drawer are documented here. The project follows
 
 ## [Unreleased]
 
+## [2.6.1] - 2026-08-31
+
 ### Changed
 
 - Align CI, release, dependency, runtime, and archive policies with the
   maintained plugin suite.
 - Route Quickshell inventory and leak checks through the configured executable.
+- Validate the tracked release payload locally and run staged-tree checks from
+  the repository pre-commit hook.
+
+### Fixed
+
+- Detect the App Drawer IPC target before enabling automatic live tests.
 
 ## [2.6.0] - 2026-08-30
 
@@ -33,5 +41,6 @@ All notable changes to App Drawer are documented here. The project follows
   implementation.
 - Make expansion behavior and animation styles configurable per monitor.
 
-[Unreleased]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.0...HEAD
+[Unreleased]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.1...HEAD
+[2.6.1]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.0...v2.6.1
 [2.6.0]: https://github.com/bolens/omarchy-app-drawer/releases/tag/v2.6.0
