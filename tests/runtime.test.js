@@ -135,8 +135,12 @@ assert.match(appearanceSettings, /objectName:\s*"tooltipToggle"[\s\S]*implicitHe
 assert.match(widget, /function applySlotBindings\(\)/)
 assert.match(widget, /slotBindingTimer[\s\S]*bindingAttempts < 20/,
   "slot attachment must retry within a deterministic bound when the stock row mounts asynchronously")
-assert.match(widget, /transitionSlots\.length < root\.expectedTransitionSlotCount\(\)/,
+assert.match(widget, /transitionSlots\.length < (?:root\.)?expectedTransitionSlotCount\(\)/,
   "partial asynchronous row construction must not stop slot attachment retries early")
+assert.match(widget, /stableBindingMeasurements < 2/,
+  "startup slot attachment must wait for consecutive stable extent measurements")
+assert.match(widget, /Math\.abs\(lastAnimationTotalExtent - previousBindingTotalExtent\)/,
+  "startup stability must compare measured slot geometry instead of slot count alone")
 assert.match(widget, /slot\.width = Qt\.binding\(root\.animatedWidthBinding\(slot, extent, trailingExtent, totalExtent\)\)/,
   "animated horizontal slot widths must restore their stock binding")
 assert.match(widget, /property real revealProgress:/)

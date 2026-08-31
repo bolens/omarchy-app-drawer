@@ -5,6 +5,11 @@ All notable changes to App Drawer are documented here. The project follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Wait for restored monitor slot geometry to settle after a shell restart so
+  the first drawer transition animates across the complete saved widget row.
+
 ## [2.6.1] - 2026-08-31
 
 ### Changed
