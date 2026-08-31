@@ -34,7 +34,14 @@ node tests/fleet_hardening.test.js
 omarchy_path=${OMARCHY_PATH:-/home/panda/.local/share/omarchy-overlay}
 qmllint_bin=${QMLLINT:-qmllint}
 "$qmllint_bin" -I "$omarchy_path/shell" Button.qml WidgetButton.qml PlainTextToggle.qml BarWidget.qml DrawerSettings.qml DrawerAppearanceSettings.qml Service.qml Bar.qml
-if [[ ${OMARCHY_SKIP_VALIDATE:-0} != 1 ]]; then omarchy plugin validate "$plugin_dir"; fi
+if [[ ${OMARCHY_SKIP_VALIDATE:-0} != 1 ]]; then
+  validation_dir=$(mktemp -d)
+  trap 'rm -rf -- "$validation_dir"' EXIT
+  git archive HEAD | tar -x -C "$validation_dir"
+  omarchy plugin validate "$validation_dir"
+  rm -rf -- "$validation_dir"
+  trap - EXIT
+fi
 
 if [[ ${OMABAR_QML_TESTS:-auto} == always ]] ||
    { [[ ${OMABAR_QML_TESTS:-auto} == auto ]] &&
@@ -53,7 +60,7 @@ elif [[ ${OMABAR_QML_TESTS:-auto} != never ]]; then
 fi
 
 if [[ ${OMABAR_LIVE_TESTS:-auto} == always ]] ||
-   { [[ ${OMABAR_LIVE_TESTS:-auto} == auto ]] && command -v qs >/dev/null && qs list --all 2>/dev/null | grep -q 'Process ID:'; }; then
+   { [[ ${OMABAR_LIVE_TESTS:-auto} == auto ]] && scripts/verify-live --detect >/dev/null 2>&1; }; then
   scripts/verify-live
 elif [[ ${OMABAR_LIVE_TESTS:-auto} != never ]]; then
   printf 'Skipping live App Drawer tests: no Quickshell session found.\n'

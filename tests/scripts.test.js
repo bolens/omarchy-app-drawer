@@ -48,5 +48,11 @@ try {
     "capture must restore the selected and previously focused monitor")
   assert.match(capture,/grim -o "\$monitor"/,
     "settings evidence must include the complete monitor-height panel")
+  const live = fs.readFileSync(path.join(root,"scripts/verify-live"),"utf8")
+  const runner = fs.readFileSync(path.join(root,"tests/run_all.sh"),"utf8")
+  assert.match(live, /--detect/,
+    "live verification must expose a side-effect-free availability probe")
+  assert.match(runner, /scripts\/verify-live --detect/,
+    "auto mode must detect App Drawer IPC rather than any Quickshell process")
 } finally { fs.rmSync(temp,{recursive:true,force:true}) }
 console.log("App Drawer migration and deployment scripts passed")
