@@ -6,7 +6,7 @@ const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.json"), "u
 assert.equal(manifest.schemaVersion, 1)
 assert.equal(manifest.id, "io.github.bolens.app-drawer")
 assert.equal(manifest.name, "App Drawer")
-assert.equal(manifest.version, "2.6.1")
+assert.equal(manifest.version, "2.6.2")
 assert.equal(manifest.author, "bolens")
 assert.equal(manifest.license, "MIT")
 assert.deepEqual(manifest.kinds, ["bar-widget", "service"])
