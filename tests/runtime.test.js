@@ -22,6 +22,10 @@ assert.match(widget, /if \(bar && bar\.vertical\)[\s\S]*slot\.height = Qt\.bindi
   "vertical drawer transitions must restore height rather than horizontal width")
 assert.match(widget, /var extent = bar && bar\.vertical \? slot\.implicitHeight : slot\.implicitWidth/,
   "drawer reveal geometry must follow the active bar axis")
+assert.match(legacyBar, /!!\(hyprMonitor && hyprMonitor\.activeWorkspace[\s\S]*hyprMonitor\.activeWorkspace\.hasFullscreen === true\)/,
+  "each vendored bar must track fullscreen state on its own monitor")
+assert.match(legacyBar, /mask:\s*Region\s*\{[\s\S]*width:\s*barWindow\.inputSuppressed \? 0 : barWindow\.width[\s\S]*height:\s*barWindow\.inputSuppressed \? 0 : barWindow\.height/,
+  "fullscreen-covered or hidden bars must expose an empty input region")
 assert.match(plainTextToggle, /Accessible\.role:\s*Accessible\.CheckBox[\s\S]*Accessible\.checked:\s*checked/,
   "settings toggles must expose their checked state")
 
