@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "io.github.bolens.app-drawer",
   "name": "App Drawer",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "author": "bolens",
   "license": "MIT",
   "description": "A per-monitor, animated Omarchy bar drawer with click or hover behavior, appearance controls, and deterministic IPC.",
