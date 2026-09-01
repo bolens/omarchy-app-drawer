@@ -5,12 +5,19 @@ All notable changes to App Drawer are documented here. The project follows
 
 ## [Unreleased]
 
+## [2.6.4] - 2026-09-01
+
 ### Changed
 
 - Give taskbar, cascade, soft-cascade, and uniform reveals visibly distinct
   opacity timing while retaining the single clipped extent that avoids
   all-widget layout churn.
 - Regenerate the Pages motion previews from the tuned runtime profiles.
+
+### Fixed
+
+- Preserve the original motion-preview duration while rendering smoother frames.
+- Harden Pages, screenshot, and CI-image contracts found during review.
 
 ## [2.6.3] - 2026-09-01
 
@@ -65,7 +72,8 @@ All notable changes to App Drawer are documented here. The project follows
   implementation.
 - Make expansion behavior and animation styles configurable per monitor.
 
-[Unreleased]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.3...HEAD
+[Unreleased]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.4...HEAD
+[2.6.4]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.3...v2.6.4
 [2.6.3]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.2...v2.6.3
 [2.6.2]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.1...v2.6.2
 [2.6.1]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.0...v2.6.1
