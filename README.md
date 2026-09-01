@@ -6,6 +6,8 @@ A compact, per-monitor drawer for Omarchy Shell's stock bar. It keeps the stock 
 
 ![App Drawer collapsed and expanded](preview.png)
 
+_Collapsed and expanded states are shown at the same capture width for a direct comparison._
+
 ## Highlights
 
 - Independent expanded/collapsed state and click-or-hover behavior per monitor.
