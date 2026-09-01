@@ -3,11 +3,12 @@ import QtQuick
 
 ShellRoot {
   id: root
+  property list<string> loadedPinned: ["tray"]
   QtObject {
     id: shellMock
     property int mutationCount: 0
     property bool failNext: false
-    property var shellConfig: ({bar:{layout:{right:["tray","audio","io.github.bolens.app-drawer"]},drawerExpandedEntries:["tray","audio"],drawerAppearance:{iconSize:14,horizontalMargin:8}},plugins:[]})
+    property var shellConfig: ({bar:{layout:{right:["tray","audio","io.github.bolens.app-drawer"]},drawerExpandedEntries:["tray","audio"],drawerAlwaysVisible:root.loadedPinned,drawerAppearance:{iconSize:14,horizontalMargin:8}},plugins:[]})
     function mutateShellConfig(mutator) {
       mutationCount++
       if (failNext) { failNext = false; throw new Error("fixture persistence failure") }
@@ -21,8 +22,10 @@ ShellRoot {
     onTriggered: {
       if (shellMock.mutationCount !== 2 || service.appearance.iconSize !== 22
           || service.appearance.horizontalMargin !== 11
-          || service.drawerState.alwaysVisible.join(",") !== "audio")
+          || service.drawerState.alwaysVisible.join(",") !== "tray,audio")
         throw new Error("rapid settings were not coalesced into one transaction")
+      var reloaded=JSON.parse(JSON.stringify(shellMock.shellConfig))
+      if (reloaded.bar.drawerAlwaysVisible.join(",") !== "tray,audio") throw new Error("pinned widget selection reset after save and reload")
       if (service.mutationStatus !== "saved") throw new Error("successful batch did not publish feedback")
       var serial = service.mutationSerial
       if (service.updateAppearance({iconSize:22}) !== "unchanged" || service.mutationSerial !== serial
