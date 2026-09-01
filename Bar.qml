@@ -104,9 +104,7 @@ Item {
   // drawer is collapsed; plugin service entry points remain alive in the host.
   property bool widgetDrawerExpanded: false
   readonly property var alwaysVisibleWidgetIds: {
-    var values = barConfig && Array.isArray(barConfig.drawerAlwaysVisible)
-      ? barConfig.drawerAlwaysVisible : []
-    return values.map(function(value) { return String(value) })
+    return Model.uniqueIds(barConfig ? barConfig.drawerAlwaysVisible : [])
   }
 
   function registerClickTarget(target) {
