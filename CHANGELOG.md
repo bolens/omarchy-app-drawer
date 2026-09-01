@@ -5,6 +5,14 @@ All notable changes to App Drawer are documented here. The project follows
 
 ## [Unreleased]
 
+## [2.6.6] - 2026-09-01
+
+### Added
+
+- Add selectable dark and light themes to the Pages site.
+- Default to GitHub Light for a browser light preference while retaining the
+  existing dark palette when no color preference is specified.
+
 ## [2.6.5] - 2026-09-01
 
 ### Fixed
@@ -79,7 +87,8 @@ All notable changes to App Drawer are documented here. The project follows
   implementation.
 - Make expansion behavior and animation styles configurable per monitor.
 
-[Unreleased]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.5...HEAD
+[Unreleased]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.6...HEAD
+[2.6.6]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.5...v2.6.6
 [2.6.5]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.4...v2.6.5
 [2.6.4]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.3...v2.6.4
 [2.6.3]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.2...v2.6.3
