@@ -14,4 +14,6 @@
 :is([data-theme="github-light"],[data-theme="catppuccin-latte"],[data-theme="solarized-light"]) .install{background:var(--panel);color:var(--ink);border-color:var(--line)}
 :is([data-theme="github-light"],[data-theme="catppuccin-latte"],[data-theme="solarized-light"]) .showcase{color:var(--ink)}
 :is([data-theme="github-light"],[data-theme="catppuccin-latte"],[data-theme="solarized-light"]) :is(.showcase .eyebrow,.showcase-copy>p){color:color-mix(in srgb,var(--ink) 72%,var(--amber))}
+:is([data-theme="github-light"],[data-theme="catppuccin-latte"],[data-theme="solarized-light"]) .showcase{background:var(--panel);border:1px solid var(--line)}
+:is([data-theme="github-light"],[data-theme="catppuccin-latte"],[data-theme="solarized-light"]) :is(.proof strong,.showcase .eyebrow,.showcase-copy>p,.install .eyebrow){color:var(--ink)}
 @media(max-width:800px){.theme-picker{margin-left:auto}.theme-picker select{max-width:8rem}}

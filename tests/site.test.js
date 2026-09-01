@@ -11,6 +11,7 @@ for(const theme of ["github-light","catppuccin-latte","solarized-light"]) assert
 assert.match(html,/prefers-color-scheme: light/);assert.match(html,/\? "github-light" : root\.dataset\.defaultTheme/)
 assert.match(html,/localStorage\.getItem\(root\.dataset\.themeStorage\)/)
 assert.match(themeCss,/\[data-theme="github-light"\]\s*\{\s*color-scheme:light/);assert.match(themeJs,/if \(themeColor\)/);assert.match(themeJs,/if \(root\.dataset\.themeStorage\)/)
+assert.match(themeCss,/\.proof strong,[^}]*\.install \.eyebrow\)\{color:var\(--ink\)\}/)
 assert.match(notFound,/prefers-color-scheme: light/);assert.match(notFound,/URLSearchParams/);assert.match(notFound,/root\.dataset\.themeStorage/)
 for(const style of ["taskbar","cascade","soft-cascade","uniform","instant"])
   {
