@@ -172,8 +172,10 @@ assert.match(model, /total \* p - trailing/,
   "the reveal must preserve spacing by distributing one shared clipped extent from the toggle outward")
 assert.doesNotMatch(model, /mode === "uniform"[\s\S]{0,80}own \* p/,
   "uniform style must not restore the all-slots-resize performance regression")
-assert.match(model, /mode === "cascade"[\s\S]*fadeSpan = 0\.18[\s\S]*local \* local \* \(3 - 2 \* local\)/,
-  "cascade must use a bounded spatial opacity wave instead of overlapping geometry animations")
+assert.match(model, /fadeSpan = style === "cascade" \? 0\.22 : 0\.55/,
+  "cascade styles must use visibly distinct bounded opacity waves")
+assert.match(model, /mode === "uniform"\) return p \* p \* p/,
+  "uniform style must use a pronounced whole-drawer fade")
 assert.match(widget, /for \(var reverseIndex = slots\.length - 1; reverseIndex >= 0; reverseIndex--\)/,
   "taskbar-style reveal must expose the slot nearest the toggle first")
 assert.match(widget, /transitionTopologyKey[\s\S]*onTransitionTopologyKeyChanged:\s*scheduleSlotBinding/,

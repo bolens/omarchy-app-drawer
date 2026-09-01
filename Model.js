@@ -204,29 +204,35 @@ function revealExtent(style, progress, extent, trailingExtent, totalExtent) {
   var own = Math.max(0, Number(extent) || 0)
   var trailing = Math.max(0, Number(trailingExtent) || 0)
   var total = Math.max(0, Number(totalExtent) || 0)
-  // Every animated style uses the proven fixed-spacing wipe geometry. Visual
-  // variants are compositor-friendly opacity treatments in revealOpacity().
+  // Keep one clipped extent moving through the row. Resizing every slot at
+  // once reintroduces layout churn; styles differ through bounded opacity
+  // envelopes in revealOpacity().
   return Math.max(0, Math.min(own, total * p - trailing))
+}
+
+function revealLocalProgress(style, progress, trailingExtent, totalExtent) {
+  var p = Math.max(0, Math.min(1, Number(progress) || 0))
+  var trailing = Math.max(0, Number(trailingExtent) || 0)
+  var total = Math.max(0, Number(totalExtent) || 0)
+  var spatialStart = total > 0 ? Math.min(1, trailing / total) : 0
+  var fadeSpan = style === "cascade" ? 0.22 : 0.55
+  return Math.max(0, Math.min(1, (p - spatialStart) / fadeSpan))
 }
 
 function revealOpacity(style, progress, extent, trailingExtent, totalExtent) {
   var mode = enumValue(style, ["taskbar", "cascade", "softCascade", "uniform"], "taskbar")
   var p = Math.max(0, Math.min(1, Number(progress) || 0))
   if (mode === "taskbar") return 1
-  if (mode === "uniform") return p <= 0 ? 0 : 0.2 + 0.8 * p
-  var own = Math.max(0, Number(extent) || 0)
+  if (mode === "uniform") return p * p * p
   var trailing = Math.max(0, Number(trailingExtent) || 0)
   var total = Math.max(0, Number(totalExtent) || 0)
+  var local = revealLocalProgress(mode, p, trailing, total)
+  if (local <= 0) return 0
   if (mode === "cascade") {
-    var spatialStart = total > 0 ? trailing / total : 0
-    var fadeSpan = 0.18
-    var local = Math.max(0, Math.min(1, (p - spatialStart) / fadeSpan))
     return local * local * (3 - 2 * local)
   }
-  var visible = revealExtent(mode, p, own, trailing, total)
-  if (visible <= 0) return 0
-  if (visible >= own) return 1
-  return 0.25 + 0.75 * visible / Math.max(1, own)
+  var softened = local * local * (3 - 2 * local)
+  return 0.05 + 0.95 * softened
 }
 
 function appearanceSettings(value) {
