@@ -4,7 +4,13 @@ A compact, per-monitor drawer for Omarchy Shell's stock bar. It keeps the stock 
 
 [User guide](https://bolens.github.io/omarchy-app-drawer/) · [Report an issue](https://github.com/bolens/omarchy-app-drawer/issues/new/choose) · [Security policy](SECURITY.md)
 
-![App Drawer collapsed and expanded](preview.png)
+### Collapsed
+
+![App Drawer collapsed](screenshots/collapsed.png)
+
+### Expanded
+
+![App Drawer expanded](screenshots/expanded.png)
 
 _Collapsed and expanded states are shown at the same capture width for a direct comparison._
 

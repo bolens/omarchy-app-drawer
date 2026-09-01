@@ -3,8 +3,9 @@ const fs = require("node:fs")
 const path = require("node:path")
 const root = path.join(__dirname,"..")
 const readme = fs.readFileSync(path.join(root,"README.md"),"utf8")
-assert.match(readme,/!\[App Drawer collapsed and expanded\]\(preview\.png\)/,
-  "README must embed the current collapsed/expanded preview")
+for (const state of ["collapsed","expanded"])
+  assert.match(readme,new RegExp(`!\\[App Drawer ${state}\\]\\(screenshots/${state}\\.png\\)`),
+    `README must embed the current ${state} screenshot`)
 assert.match(readme,/same capture width/i,
   "README must describe the equal-width state comparison")
 for (const command of ["scripts/migrate-to-stock-bar","scripts/deploy-shell-runtime","npm test","OMABAR_LIVE_TESTS=never","OMABAR_LIVE_TESTS=always"])
