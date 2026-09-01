@@ -15,6 +15,24 @@ function isObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value)
 }
 
+function isBoundedList(value) {
+  return boundedListLength(value) >= 0
+}
+
+function boundedListLength(value) {
+  if (!value || typeof value !== "object") return -1
+  var length = Number(value.length)
+  return isFinite(length) && length >= 0 && Math.floor(length) === length && length <= 4096 ? length : -1
+}
+
+function listFrom(value) {
+  var length = boundedListLength(value)
+  if (length < 0) return []
+  var result = []
+  for (var index = 0; index < length; index++) result.push(value[index])
+  return result
+}
+
 function entryId(entry) {
   if (typeof entry === "string") return entry.trim()
   if (!isObject(entry)) return ""
@@ -23,17 +41,16 @@ function entryId(entry) {
 
 function uniqueIds(values) {
   var result = []
-  if (!Array.isArray(values)) return result
-  for (var index = 0; index < values.length; index++) {
-    var id = String(values[index] || "").trim()
+  var source = listFrom(values)
+  for (var index = 0; index < source.length; index++) {
+    var id = String(source[index] || "").trim()
     if (id && id !== PLUGIN_ID && result.indexOf(id) === -1) result.push(id)
   }
   return result
 }
 
 function validEntries(values) {
-  if (!Array.isArray(values)) return []
-  return values.filter(function(entry) { return entryId(entry) !== "" })
+  return listFrom(values).filter(function(entry) { return entryId(entry) !== "" })
 }
 
 function withoutDrawer(values) {

@@ -32,8 +32,11 @@ node tests/release.test.js
 node tests/site.test.js
 node tests/fleet_hardening.test.js
 omarchy_path=${OMARCHY_PATH:-/home/panda/.local/share/omarchy-overlay}
-qmllint_bin=${QMLLINT:-qmllint}
-"$qmllint_bin" -I "$omarchy_path/shell" Button.qml WidgetButton.qml PlainTextToggle.qml BarWidget.qml DrawerSettings.qml DrawerAppearanceSettings.qml Service.qml Bar.qml
+qmllint_bin=${QMLLINT:-/usr/lib/qt6/bin/qmllint}
+[[ -x "$qmllint_bin" ]] || { printf 'Qt 6 qmllint not found: %s\n' "$qmllint_bin" >&2; exit 1; }
+"$qmllint_bin" -I "$omarchy_path/shell" -i "$plugin_dir/qmldir" \
+  -i "$omarchy_path/shell/Commons/qmldir" -i "$omarchy_path/shell/Ui/qmldir" \
+  Button.qml WidgetButton.qml PlainTextToggle.qml BarWidget.qml DrawerSettings.qml DrawerAppearanceSettings.qml Service.qml Bar.qml
 if [[ ${OMARCHY_SKIP_VALIDATE:-0} != 1 ]]; then
   validation_dir=$(mktemp -d)
   trap 'rm -rf -- "$validation_dir"' EXIT
@@ -45,8 +48,8 @@ fi
 
 if [[ ${OMABAR_QML_TESTS:-auto} == always ]] ||
    { [[ ${OMABAR_QML_TESTS:-auto} == auto ]] &&
-     [[ -S ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/wayland-1 ]] &&
-     [[ -w ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/quickshell ]]; }; then
+     [[ -S "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/wayland-1" ]] &&
+     [[ -w "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/quickshell" ]]; }; then
   shell_inventory_before=$(persistent_shell_inventory)
   tests/run_qml_runtime.sh
   shell_inventory_after=$(persistent_shell_inventory)
