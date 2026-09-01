@@ -102,6 +102,8 @@ assert.match(ciImage, /docker\/setup-buildx-action@37fe631027851001ddb9b187196cc
 assert.match(ciImage, /docker\/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a/)
 assert.match(ciImage, /provenance:\s*mode=max/)
 assert.match(ciImage, /sbom:\s*true/)
+assert.match(ciImage, /github\.event_name\s*!=\s*'schedule'.*sha-\{1\}/,
+  "scheduled rebuilds must not overwrite commit-addressed image tags")
 
 assert.ok(fs.statSync("scripts/capture-screenshots").mode & 0o100)
 assert.match(capture, /trap .*?(cleanup|restore)/)

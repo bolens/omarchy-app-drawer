@@ -14,6 +14,11 @@ All notable changes to App Drawer are documented here. The project follows
   all-widget layout churn.
 - Regenerate the Pages motion previews from the tuned runtime profiles.
 
+### Fixed
+
+- Preserve the original motion-preview duration while rendering smoother frames.
+- Harden Pages, screenshot, and CI-image contracts found during review.
+
 ## [2.6.3] - 2026-09-01
 
 ### Fixed

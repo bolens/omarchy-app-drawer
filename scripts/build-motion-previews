@@ -5,7 +5,7 @@ repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 source_image="$repo_root/screenshots/expanded.png"
 output_dir="$repo_root/docs/motion"
 work_dir=$(mktemp -d /tmp/app-drawer-motion.XXXXXX)
-trap 'rm -r "$work_dir"' EXIT
+trap 'rm -rf -- "$work_dir"' EXIT
 
 command -v magick >/dev/null || { printf '%s\n' 'ImageMagick is required.' >&2; exit 1; }
 mkdir -p "$output_dir"
@@ -13,7 +13,7 @@ mkdir -p "$output_dir"
 # The drawer glyph occupies the final 80 px. The fourteen 80 px slots before it
 # reproduce the shared wipe geometry and distinct opacity profiles in Model.js.
 magick "$source_image" -fill '#000000' -draw 'rectangle 0,34 1119,98' "$work_dir/base.png"
-progress=(0 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96 100 100 100 100 96 92 88 84 80 76 72 68 64 60 56 52 48 44 40 36 32 28 24 20 16 12 8 4 0 0 0)
+progress=(0 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96 100 100 100 100 96 92 88 84 80 76 72 68 64 60 56 52 48 44 40 36 32 28 24 20 16 12 8 4 0 0 0 0 0 0 0)
 
 render_frame() {
   local style=$1 frame=$2 p=$3 command=(magick "$work_dir/base.png")
