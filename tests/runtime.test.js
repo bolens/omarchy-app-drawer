@@ -12,9 +12,14 @@ const button = read("Button.qml")
 const widgetButton = read("WidgetButton.qml")
 const plainTextToggle = read("PlainTextToggle.qml")
 const qmlTestRunner = read("tests/run_all.sh")
+const qmlModule = read("qmldir")
+const qmlLintPolicy = read(".qmllint.ini")
 
 assert.match(qmlTestRunner, /QMLLINT:-\/usr\/lib\/qt6\/bin\/qmllint/,
   "local linting must prefer the current Qt 6 qmllint")
+assert.match(qmlModule, /^module io\.github\.bolens\.app_drawer$/m)
+assert.match(qmlModule, /^BarWidget 1\.0 BarWidget\.qml$/m)
+assert.match(qmlLintPolicy, /^DuplicatePropertyBinding=error$/m)
 
 assert.match(button, /focusable:\s*true[\s\S]*Accessible\.role:\s*Accessible\.Button[\s\S]*Accessible\.onPressAction/,
   "local buttons must be keyboard-focusable and expose an assistive press action")

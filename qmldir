@@ -1,0 +1,10 @@
+module io.github.bolens.app_drawer
+Bar 1.0 Bar.qml
+BarWidget 1.0 BarWidget.qml
+Button 1.0 Button.qml
+DrawerAppearanceSettings 1.0 DrawerAppearanceSettings.qml
+DrawerSettings 1.0 DrawerSettings.qml
+PlainTextToggle 1.0 PlainTextToggle.qml
+PlainTextWidgetButton 1.0 PlainTextWidgetButton.qml
+Service 1.0 Service.qml
+WidgetButton 1.0 WidgetButton.qml
