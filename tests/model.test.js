@@ -15,6 +15,11 @@ assert.equal(context.entryId(null), "")
 assert.equal(context.entryId({plugin: "fallback"}), "fallback")
 assert.deepEqual(Array.from(context.uniqueIds(["tray", "tray", drawer, "", null])), ["tray"])
 assert.deepEqual(Array.from(context.uniqueIds({0:"tray",1:"network",length:2})), ["tray","network"])
+let lengthReads = 0
+const shiftingList = {0:"tray",1:"network"}
+Object.defineProperty(shiftingList, "length", {get() { lengthReads++; return lengthReads === 1 ? 2 : 4097 }})
+assert.deepEqual(Array.from(context.uniqueIds(shiftingList)), ["tray","network"])
+assert.equal(lengthReads, 1)
 for (const invalidList of [{length:Infinity},{length:4097},{length:-1},{length:1.5},function listValue() {}]) {
   assert.deepEqual(Array.from(context.uniqueIds(invalidList)), [])
   assert.deepEqual(Array.from(context.validEntries(invalidList)), [])

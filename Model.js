@@ -16,15 +16,20 @@ function isObject(value) {
 }
 
 function isBoundedList(value) {
-  if (!value || typeof value !== "object") return false
+  return boundedListLength(value) >= 0
+}
+
+function boundedListLength(value) {
+  if (!value || typeof value !== "object") return -1
   var length = Number(value.length)
-  return isFinite(length) && length >= 0 && Math.floor(length) === length && length <= 4096
+  return isFinite(length) && length >= 0 && Math.floor(length) === length && length <= 4096 ? length : -1
 }
 
 function listFrom(value) {
-  if (!isBoundedList(value)) return []
+  var length = boundedListLength(value)
+  if (length < 0) return []
   var result = []
-  for (var index = 0; index < value.length; index++) result.push(value[index])
+  for (var index = 0; index < length; index++) result.push(value[index])
   return result
 }
 
