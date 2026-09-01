@@ -11,9 +11,9 @@ command -v magick >/dev/null || { printf '%s\n' 'ImageMagick is required.' >&2; 
 mkdir -p "$output_dir"
 
 # The drawer glyph occupies the final 80 px. The fourteen 80 px slots before it
-# follow Model.revealExtent() and Model.revealOpacity() from right to left.
+# reproduce the shared wipe geometry and distinct opacity profiles in Model.js.
 magick "$source_image" -fill '#000000' -draw 'rectangle 0,34 1119,98' "$work_dir/base.png"
-progress=(0 8 17 25 33 42 50 58 67 75 83 92 100 100 100 100 92 83 75 67 58 50 42 33 25 17 8 0 0 0)
+progress=(0 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96 100 100 100 100 96 92 88 84 80 76 72 68 64 60 56 52 48 44 40 36 32 28 24 20 16 12 8 4 0 0 0)
 
 render_frame() {
   local style=$1 frame=$2 p=$3 command=(magick "$work_dir/base.png")
@@ -22,21 +22,29 @@ render_frame() {
     x=$((slot * 80))
     trailing=$((1120 - x - 80))
     visible=$((1120 * p / 100 - trailing))
-    (( visible < 0 )) && visible=0
-    (( visible > 80 )) && visible=80
-    (( visible == 0 )) && continue
     alpha=100
     case "$style" in
       cascade)
-        local_progress=$(((p * 1120 / 100 - trailing) * 100 / 202))
+        local_progress=$(((p * 1120 / 100 - trailing) * 100 / 246))
         (( local_progress < 0 )) && local_progress=0
         (( local_progress > 100 )) && local_progress=100
         smooth=$((local_progress * local_progress * (300 - 2 * local_progress) / 10000))
         alpha=$smooth
         ;;
-      soft-cascade) alpha=$((25 + 75 * visible / 80)) ;;
-      uniform) alpha=$((p == 0 ? 0 : 20 + 80 * p / 100)) ;;
+      soft-cascade)
+        local_progress=$(((p * 1120 / 100 - trailing) * 100 / 616))
+        (( local_progress < 0 )) && local_progress=0
+        (( local_progress > 100 )) && local_progress=100
+        smooth=$((local_progress * local_progress * (300 - 2 * local_progress) / 10000))
+        alpha=$((local_progress == 0 ? 0 : 5 + 95 * smooth / 100))
+        ;;
+      uniform)
+        alpha=$((p * p * p / 10000))
+        ;;
     esac
+    (( visible < 0 )) && visible=0
+    (( visible > 80 )) && visible=80
+    (( visible == 0 )) && continue
     command+=("(" "$source_image" -crop "${visible}x64+$((x + 80 - visible))+34" +repage ")")
     if (( alpha < 100 )); then command+=(-channel A -evaluate multiply "$alpha%" +channel); fi
     command+=(-geometry "+$((x + 80 - visible))+34" -composite)
@@ -51,7 +59,7 @@ for style in taskbar cascade soft-cascade uniform; do
     render_frame "$style" "$frame" "${progress[$index]}"
     frames+=("$work_dir/${style}-${frame}.png")
   done
-  magick -delay 4 -loop 0 "${frames[@]}" -quality 82 "$output_dir/$style.webp"
+  magick -delay 2 -loop 0 "${frames[@]}" -quality 82 "$output_dir/$style.webp"
 done
 
 magick -delay 55 -loop 0 "$work_dir/base.png" "$source_image" "$output_dir/instant.webp"

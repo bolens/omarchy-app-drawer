@@ -89,17 +89,31 @@ assert.equal(context.resetAppearance(appearanceConfig).animationCurve, "smooth")
 
 assert.equal(context.revealExtent("taskbar", .5, 20, 40, 100), 10)
 assert.equal(context.revealExtent("softCascade", .5, 20, 40, 100), 10)
-assert.equal(context.revealExtent("uniform", .5, 20, 0, 100), 20)
+assert.equal(context.revealExtent("uniform", .5, 20, 40, 100), 10)
 assert.equal(context.revealExtent("cascade", .5, 20, 40, 100), 10)
 assert.equal(context.revealOpacity("taskbar", .1, 20, 0, 100), 1)
 assert.equal(context.revealOpacity("softCascade", 0, 20, 0, 100), 0)
 assert.equal(context.revealOpacity("softCascade", 1, 20, 0, 100), 1)
 assert.equal(context.revealOpacity("uniform", 0, 20, 0, 100), 0)
-assert.ok(Math.abs(context.revealOpacity("uniform", .5, 20, 0, 100) - .6) < 1e-9)
+assert.ok(Math.abs(context.revealOpacity("uniform", .5, 20, 0, 100) - .125) < 1e-9)
 assert.equal(context.revealOpacity("uniform", 1, 20, 0, 100), 1)
 assert.equal(context.revealOpacity("cascade", 0, 20, 0, 100), 0)
-assert.equal(context.revealOpacity("cascade", .09, 20, 0, 100), .5)
-assert.equal(context.revealOpacity("cascade", .18, 20, 0, 100), 1)
+assert.equal(context.revealOpacity("cascade", .11, 20, 0, 100), .5)
+assert.equal(context.revealOpacity("cascade", .22, 20, 0, 100), 1)
+const motionSamples = [
+  {progress:.25, extent:20, trailing:0, total:100},
+  {progress:.5, extent:20, trailing:40, total:100},
+  {progress:.75, extent:20, trailing:80, total:100}
+]
+const motionFingerprints = ["taskbar", "cascade", "softCascade", "uniform"].map(style =>
+  motionSamples.map(sample => [
+    Number(context.revealExtent(style, sample.progress, sample.extent, sample.trailing, sample.total).toFixed(4)),
+    Number(context.revealOpacity(style, sample.progress, sample.extent, sample.trailing, sample.total).toFixed(4))
+  ]))
+assert.equal(new Set(motionFingerprints.map(JSON.stringify)).size, 4,
+  "every motion preset must retain a distinct motion profile")
+assert.equal(context.revealExtent("uniform", .5, 20, 80, 100), 0,
+  "uniform reveal must retain the single clipped extent")
 for (const style of ["taskbar", "cascade", "softCascade", "uniform"]) {
   let previous = -1
   for (let step = 0; step <= 100; step++) {

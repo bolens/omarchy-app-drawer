@@ -19,6 +19,20 @@ ShellRoot {
     var settings = Model.appearanceSettings({iconSize:100,leftClickAction:"bad",showTooltip:false})
     if (settings.iconSize !== 30 || settings.leftClickAction !== "toggle" || settings.showTooltip !== false)
       throw new Error("appearance sanitization failed")
+    var styles = ["taskbar", "cascade", "softCascade", "uniform"]
+    var fingerprints = []
+    for (var styleIndex = 0; styleIndex < styles.length; styleIndex++) {
+      var style = styles[styleIndex]
+      fingerprints.push([
+        Model.revealOpacity(style, 0.25, 20, 0, 100).toFixed(4),
+        Model.revealOpacity(style, 0.5, 20, 40, 100).toFixed(4),
+        Model.revealOpacity(style, 0.75, 20, 80, 100).toFixed(4)
+      ].join(":"))
+    }
+    for (var left = 0; left < fingerprints.length; left++)
+      for (var right = left + 1; right < fingerprints.length; right++)
+        if (fingerprints[left] === fingerprints[right])
+          throw new Error("motion presets share a QML runtime fingerprint")
     var legacy = {bar:{layout:{right:[Model.PLUGIN_ID]},drawerAppearance:{iconSize:99,hoverToExpand:true},drawerTransition:{phase:"expanding"}},plugins:[{id:"old",_omabarDrawerKeepAlive:true}]}
     var migration = Model.migrateConfig(legacy)
     if (!migration.changed || legacy.bar._appDrawerSettingsVersion !== Model.SETTINGS_VERSION

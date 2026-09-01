@@ -5,6 +5,13 @@ All notable changes to App Drawer are documented here. The project follows
 
 ## [Unreleased]
 
+### Changed
+
+- Give taskbar, cascade, soft-cascade, and uniform reveals visibly distinct
+  opacity timing while retaining the single clipped extent that avoids
+  all-widget layout churn.
+- Regenerate the Pages motion previews from the tuned runtime profiles.
+
 ## [2.6.3] - 2026-09-01
 
 ### Fixed
