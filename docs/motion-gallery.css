@@ -1,0 +1,37 @@
+.motion-gallery {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.motion-gallery figure {
+  box-shadow: none;
+}
+
+.motion-gallery img {
+  aspect-ratio: 20 / 3;
+  object-fit: cover;
+}
+
+.motion-gallery figcaption {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.motion-gallery figcaption strong {
+  color: var(--ink);
+}
+
+@media (min-width: 801px) {
+  .showcase {
+    grid-template-columns: 0.65fr 1.35fr;
+  }
+
+  .motion-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .motion-gallery figure:last-child {
+    grid-column: 1 / -1;
+  }
+}

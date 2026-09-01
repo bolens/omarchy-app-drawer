@@ -54,6 +54,7 @@ jobs:
               - 'manifest.json'
               - 'package*.json'
               - 'preview.png'
+              - 'screenshots/**'
               - 'scripts/build-site.sh'
               - 'site/**'
               - 'tests/**'
@@ -81,7 +82,7 @@ jobs:
       - name: Install archive validation tools
         run: sudo apt-get update && sudo apt-get install --yes jq shellcheck
       - name: Check shell scripts
-        run: shellcheck scripts/*.sh scripts/capture-screenshots scripts/deploy-shell-runtime scripts/migrate-to-stock-bar scripts/verify-live tests/run_all.sh tests/run_qml_runtime.sh tests/verify-stress
+        run: shellcheck scripts/*.sh scripts/build-motion-previews scripts/capture-screenshots scripts/deploy-shell-runtime scripts/migrate-to-stock-bar scripts/verify-live tests/run_all.sh tests/run_qml_runtime.sh tests/verify-stress
       - name: Validate distributable plugin
         run: |
           mkdir "$RUNNER_TEMP/plugin"
@@ -100,7 +101,7 @@ jobs:
             echo "Tracked files contain credential-like material" >&2
             exit 1
           fi
-          for required in manifest.json README.md LICENSE NOTICE preview.png; do grep -qx "$required" <<<"$files"; done
+          for required in manifest.json README.md LICENSE NOTICE preview.png screenshots/collapsed.png screenshots/expanded.png; do grep -qx "$required" <<<"$files"; done
   plugin-qml:
     name: Plugin behavior and QML
     needs: changes
