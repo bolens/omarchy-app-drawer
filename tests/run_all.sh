@@ -32,7 +32,8 @@ node tests/release.test.js
 node tests/site.test.js
 node tests/fleet_hardening.test.js
 omarchy_path=${OMARCHY_PATH:-/home/panda/.local/share/omarchy-overlay}
-qmllint_bin=${QMLLINT:-qmllint}
+qmllint_bin=${QMLLINT:-/usr/lib/qt6/bin/qmllint}
+[[ -x $qmllint_bin ]] || { printf 'Qt 6 qmllint not found: %s\n' "$qmllint_bin" >&2; exit 1; }
 "$qmllint_bin" -I "$omarchy_path/shell" Button.qml WidgetButton.qml PlainTextToggle.qml BarWidget.qml DrawerSettings.qml DrawerAppearanceSettings.qml Service.qml Bar.qml
 if [[ ${OMARCHY_SKIP_VALIDATE:-0} != 1 ]]; then
   validation_dir=$(mktemp -d)
