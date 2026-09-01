@@ -37,7 +37,7 @@
     </section>
     <section class="proof"><div><strong>5</strong><span>reveal styles</span></div><div><strong>250ms</strong><span>balanced default</span></div><div><strong>1</strong><span>shared service</span></div><div><strong>0</strong><span>extra Quickshells</span></div></section>
     <section class="section" id="features">
-      <div class="section-heading"><p class="eyebrow">Purpose-built restraint</p><h2>Less bar, without less function.</h2><p>Everything remains mounted and responsive. App Drawer changes presentation, not ownership, startup, or your existing widgets.</p></div>
+      <div class="section-heading"><p class="eyebrow">What changes</p><h2>Hide widgets without unloading them.</h2><p>App Drawer changes widget visibility. It leaves the stock bar, background services, and existing widgets mounted.</p></div>
       <div class="feature-grid">
         <article class="feature feature-wide"><span class="icon">↔</span><h3>Per-monitor control</h3><p>Leave one output expanded, collapse another, or mix click and hover behavior. State follows the monitor name, not a fragile numeric ID.</p></article>
         <article class="feature"><span class="icon">≈</span><h3>Smooth motion</h3><p>Taskbar wipe, cascade, soft cascade, uniform reveal, and instant modes with configurable curves and duration.</p></article>
@@ -47,7 +47,7 @@
       </div>
     </section>
     <section class="showcase" id="appearance">
-      <div class="showcase-copy"><p class="eyebrow">Appearance and behavior</p><h2>Motion with a point of view.</h2><p>Choose glyph direction, spacing, color roles, activation behavior, timing, and reveal choreography. Settings are compact, scroll-safe, and scoped where their meaning belongs.</p><div class="chips"><span>Taskbar wipe</span><span>Cascade</span><span>Soft cascade</span><span>Uniform reveal</span><span>Instant</span></div></div>
+      <div class="showcase-copy"><p class="eyebrow">Appearance and behavior</p><h2>Compare every reveal style.</h2><p>Choose the glyph direction, spacing, colors, click or hover behavior, duration, curve, and reveal style.</p><div class="chips"><span>Taskbar wipe</span><span>Cascade</span><span>Soft cascade</span><span>Uniform reveal</span><span>Instant</span></div></div>
       <div class="motion-gallery" aria-label="App Drawer animation previews">
         <figure><img src="motion/taskbar.webp" alt="Taskbar wipe animation preview" width="1200" height="180"><figcaption><strong>Taskbar wipe</strong><span>Slots reveal cleanly from the drawer.</span></figcaption></figure>
         <figure><img src="motion/cascade.webp" alt="Cascade animation preview" width="1200" height="180"><figcaption><strong>Cascade</strong><span>Each arriving slot fades into place.</span></figcaption></figure>
@@ -57,7 +57,7 @@
       </div>
     </section>
     <section class="section technical" id="technical">
-      <div class="section-heading"><p class="eyebrow">Designed to stay boring underneath</p><h2>Deterministic where it matters.</h2></div>
+      <div class="section-heading"><p class="eyebrow">Runtime behavior</p><h2>One service owns drawer state.</h2></div>
       <div class="flow"><div><b>Bar widgets</b><span>Monitor-local presentation</span></div><i>→</i><div><b>Shared service</b><span>State, IPC, persistence</span></div><i>→</i><div><b>Omarchy shell.json</b><span>Bounded durable settings</span></div></div>
       <div class="detail-grid"><article><h3>Race-resistant lifecycle</h3><p>Generation-tagged registrations, bounded retries, field-level coalescing, and exact monitor routing prevent stale instances from winning.</p></article><article><h3>Guarded IPC</h3><p>Versioned status, monitor controls, strict modes, normalized payloads, and visible commit failures make automation inspectable.</p></article><article><h3>Tested as a shell citizen</h3><p>Pure invariants, isolated QML harnesses, crash guards, live IPC checks, and concurrent stress preserve the persistent shell.</p></article></div>
     </section>
@@ -65,7 +65,7 @@
       <div><p class="eyebrow">Install</p><h2>Two commands. Stock bar retained.</h2><p>Requires Omarchy Quattro 4.0 or newer.</p></div>
       <div class="terminal"><div class="terminal-head"><span aria-hidden="true">•</span><span aria-hidden="true">•</span><span aria-hidden="true">•</span><button data-copy="#install-code">Copy</button></div><pre id="install-code"><code>omarchy plugin add https://github.com/bolens/omarchy-app-drawer.git --enable<br>scripts/migrate-to-stock-bar</code></pre></div>
     </section>
-    <section class="section docs"><div class="section-heading"><p class="eyebrow">Project documentation</p><h2>Everything needed to operate and extend it.</h2></div><div class="link-grid"><a href="https://github.com/bolens/omarchy-app-drawer#configuration-and-privacy"><b>Configuration</b><span>Behavior, privacy, and persistence →</span></a><a href="https://github.com/bolens/omarchy-app-drawer/blob/main/TESTING.md"><b>Testing</b><span>Local, QML, live, and stress checks →</span></a><a href="https://github.com/bolens/omarchy-app-drawer/blob/main/ARCHITECTURE.md"><b>Architecture</b><span>Ownership and lifecycle boundaries →</span></a><a href="https://github.com/bolens/omarchy-app-drawer/blob/main/SECURITY.md"><b>Security</b><span>Trust model and private reporting →</span></a></div></section>
+    <section class="section docs"><div class="section-heading"><p class="eyebrow">Project documentation</p><h2>Configuration, tests, architecture, and security.</h2></div><div class="link-grid"><a href="https://github.com/bolens/omarchy-app-drawer#configuration-and-privacy"><b>Configuration</b><span>Behavior, privacy, and persistence →</span></a><a href="https://github.com/bolens/omarchy-app-drawer/blob/main/TESTING.md"><b>Testing</b><span>Local, QML, live, and stress checks →</span></a><a href="https://github.com/bolens/omarchy-app-drawer/blob/main/ARCHITECTURE.md"><b>Architecture</b><span>Ownership and lifecycle boundaries →</span></a><a href="https://github.com/bolens/omarchy-app-drawer/blob/main/SECURITY.md"><b>Security</b><span>Trust model and private reporting →</span></a></div></section>
   </main>
   <footer><div><span class="brand-mark">‹›</span><b>App Drawer</b></div><p>Modified hard fork of OmaBar Drawer. MIT licensed.</p><div><a href="https://github.com/bolens/omarchy-app-drawer">Source</a><a href="https://github.com/bolens/omarchy-app-drawer/issues">Issues</a><a href="https://omarchy.org">Omarchy</a></div></footer>
   <script src="site.js"></script>
