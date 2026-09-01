@@ -3,6 +3,10 @@ const fs = require("node:fs")
 const path = require("node:path")
 const root = path.join(__dirname,"..")
 const readme = fs.readFileSync(path.join(root,"README.md"),"utf8")
+assert.match(readme,/!\[App Drawer collapsed and expanded\]\(preview\.png\)/,
+  "README must embed the current collapsed/expanded preview")
+assert.match(readme,/same capture width/i,
+  "README must describe the equal-width state comparison")
 for (const command of ["scripts/migrate-to-stock-bar","scripts/deploy-shell-runtime","npm test","OMABAR_LIVE_TESTS=never","OMABAR_LIVE_TESTS=always"])
   assert.ok(readme.includes(command), `README omits ${command}`)
 for (const behavior of ["service entry points","Right-click","settings panel","IPC"])
