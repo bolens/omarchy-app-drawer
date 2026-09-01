@@ -4,7 +4,7 @@ const path = require("node:path")
 const root = path.join(__dirname,"..")
 const runner = fs.readFileSync(path.join(root,"tests/run_qml_runtime.sh"),"utf8")
 const suite = fs.readFileSync(path.join(root,"tests/run_all.sh"),"utf8")
-assert.match(runner,/runtime_root=.*quickshell[\s\S]*\[\[ -w \$runtime_root \]\]/,
+assert.match(runner,/runtime_root=.*quickshell[\s\S]*\[\[ -w "\$runtime_root" \]\]/,
   "direct QML runs must reject inaccessible runtime directories before Qt aborts")
 assert.match(suite,/wayland-1[\s\S]*-w .*quickshell/,
   "automatic QML runs must require Wayland and writable Quickshell runtime state")

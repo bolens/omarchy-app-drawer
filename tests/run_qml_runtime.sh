@@ -14,11 +14,11 @@ cleanup_runtime() {
 trap cleanup_runtime EXIT INT TERM
 quickshell_bin=${QUICKSHELL_BIN:-$(command -v quickshell || command -v qs)}
 shell_root=${OMARCHY_SHELL_ROOT:-/home/panda/.local/share/omarchy-overlay/shell}
-[[ -x $quickshell_bin && -d $shell_root/Ui && -d $shell_root/Commons ]] || {
+[[ -x "$quickshell_bin" && -d "$shell_root/Ui" && -d "$shell_root/Commons" ]] || {
   printf 'QML runtime dependencies are unavailable.\n' >&2; exit 2;
 }
 runtime_root=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/quickshell
-[[ -w $runtime_root ]] || {
+[[ -w "$runtime_root" ]] || {
   printf 'Quickshell runtime directory is not writable: %s\n' "$runtime_root" >&2
   exit 2
 }

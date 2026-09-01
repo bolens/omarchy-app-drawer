@@ -48,8 +48,8 @@ fi
 
 if [[ ${OMABAR_QML_TESTS:-auto} == always ]] ||
    { [[ ${OMABAR_QML_TESTS:-auto} == auto ]] &&
-     [[ -S ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/wayland-1 ]] &&
-     [[ -w ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/quickshell ]]; }; then
+     [[ -S "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/wayland-1" ]] &&
+     [[ -w "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/quickshell" ]]; }; then
   shell_inventory_before=$(persistent_shell_inventory)
   tests/run_qml_runtime.sh
   shell_inventory_after=$(persistent_shell_inventory)
