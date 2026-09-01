@@ -11,13 +11,13 @@
 
   const sync = () => {
     const styles = getComputedStyle(root);
-    themeColor.content = styles.getPropertyValue("--bg").trim();
+    if (themeColor) themeColor.content = styles.getPropertyValue("--bg").trim();
   };
   sync();
 
   select.addEventListener("change", () => {
     root.dataset.theme = select.value;
-    try { localStorage.setItem(root.dataset.themeStorage, select.value); } catch {}
+    try { if (root.dataset.themeStorage) localStorage.setItem(root.dataset.themeStorage, select.value); } catch {}
     sync();
   });
 })();
