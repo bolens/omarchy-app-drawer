@@ -5,6 +5,16 @@ All notable changes to App Drawer are documented here. The project follows
 
 ## [Unreleased]
 
+## [2.6.3] - 2026-09-01
+
+### Fixed
+
+- Preserve QML-backed pinned and always-visible widget lists across settings
+  mutation, serialization, and reload while rejecting malformed or oversized
+  array-like values with a single bounded length snapshot.
+- Require Qt 6 QML tooling, publish plugin module metadata, and gate reliable
+  semantic lint errors in local and CI validation.
+
 ## [2.6.2] - 2026-08-31
 
 ### Fixed
@@ -48,7 +58,8 @@ All notable changes to App Drawer are documented here. The project follows
   implementation.
 - Make expansion behavior and animation styles configurable per monitor.
 
-[Unreleased]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.2...HEAD
+[Unreleased]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.3...HEAD
+[2.6.3]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.2...v2.6.3
 [2.6.2]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.1...v2.6.2
 [2.6.1]: https://github.com/bolens/omarchy-app-drawer/compare/v2.6.0...v2.6.1
 [2.6.0]: https://github.com/bolens/omarchy-app-drawer/releases/tag/v2.6.0
