@@ -1,0 +1,7 @@
+.drawer-signal { display: block; width: 100%; height: 2.25rem; margin: 1.25rem 0; overflow: visible; }
+.drawer-signal path { fill: none; stroke: var(--line); stroke-width: 2; stroke-dasharray: .06 .03; animation: drawer-track 5.4s linear infinite; }
+.drawer-signal g circle { fill: var(--panel); stroke: var(--violet); stroke-width: 2; }
+.drawer-signal .drawer-pulse { fill: var(--amber); filter: drop-shadow(0 0 7px var(--violet)); animation: drawer-pulse 5.4s cubic-bezier(.45, 0, .2, 1) infinite; }
+@keyframes drawer-track { to { stroke-dashoffset: -1; } }
+@keyframes drawer-pulse { 0%,8%{transform:translateX(0)}30%{transform:translateX(139px)}56%{transform:translateX(277px)}84%,100%{transform:translateX(416px)} }
+@media (prefers-reduced-motion: reduce) { .drawer-signal * { animation: none !important; } .drawer-signal .drawer-pulse { transform: translateX(416px); } }
