@@ -2,6 +2,7 @@
 set -euo pipefail
 repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 output_dir="$repo_root/_site"
+python3 "$repo_root/scripts/render-changelog.py" --name "Omarchy App Drawer" --base-url https://bolens.github.io/omarchy-app-drawer/ --accent "#f7768e" --source "$repo_root/CHANGELOG.md" --output "$repo_root/docs/changelog/index.html"
 version=$(jq -er '.version | select(test("^[0-9]+\\.[0-9]+\\.[0-9]+$"))' "$repo_root/manifest.json")
 rm -rf -- "$output_dir"
 cp -R -- "$repo_root/docs" "$output_dir"
