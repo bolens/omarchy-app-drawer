@@ -43,4 +43,7 @@ assert.ok(progress&&delay,"motion preview timing must remain inspectable")
 assert.equal(progress[1].trim().split(/\s+/).length*Number(delay[1]),120,
   "animated previews must retain the original 120-tick duration")
 assert.equal((html.match(/<h1/g)||[]).length,1); assert.equal((html.match(/data-copy/g)||[]).length,1)
+assert.match(html, /value="system"/); assert.match(html, /value="time"/);
+assert.match(themeJs, /new Date\(\)\.getHours\(\)/); assert.match(themeJs, /addEventListener\?\.\("change"/);
+assert.match(themeJs, /return darkTheme/, "no-preference fallback must remain dark");
 console.log("App Drawer Pages structure passed")

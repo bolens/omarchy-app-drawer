@@ -15,9 +15,16 @@
     let saved = null;
     try { requested = new URLSearchParams(location.search).get("theme"); } catch {}
     try { saved = root.dataset.themeStorage ? localStorage.getItem(root.dataset.themeStorage) : null; } catch {}
-    const preferred = typeof matchMedia === "function" && matchMedia("(prefers-color-scheme: light)").matches
-      ? "github-light" : root.dataset.defaultTheme;
-    root.dataset.theme = requested || saved || preferred;
+    const preference = requested || saved || "system";
+    const prefersLight = typeof matchMedia === "function" && matchMedia("(prefers-color-scheme: light)").matches;
+    const prefersDark = typeof matchMedia === "function" && matchMedia("(prefers-color-scheme: dark)").matches;
+    const hour = new Date().getHours();
+    root.dataset.themePreference = preference;
+    root.dataset.theme = preference === "system"
+      ? (prefersLight ? "github-light" : root.dataset.defaultTheme)
+      : preference === "time"
+        ? (hour >= 7 && hour < 19 ? "github-light" : root.dataset.defaultTheme)
+        : preference;
   </script>
   <meta property="og:title" content="App Drawer for Omarchy">
   <meta property="og:description" content="Keep the stock bar. Reveal the rest only when you need it.">
@@ -42,7 +49,7 @@
   <a class="skip" href="#main">Skip to content</a>
   <header class="site-header">
     <a class="brand" href="#top"><span class="brand-mark">‹›</span> App Drawer</a>
-    <nav aria-label="Primary"><a href="#features">Features</a><a href="#appearance">Appearance</a><a href="#technical">Technical</a><a class="nav-cta" href="https://github.com/bolens/omarchy-app-drawer">GitHub ↗</a><label class="theme-picker"><span>Theme</span><select data-theme-select aria-label="Site color theme"><option value="app-drawer">App Drawer</option><option value="tokyo-night">Tokyo Night</option><option value="catppuccin">Catppuccin</option><option value="gruvbox">Gruvbox</option><option value="nord">Nord</option><option value="github-dark">GitHub Dark</option><option value="github-light">GitHub Light</option><option value="catppuccin-latte">Catppuccin Latte</option><option value="solarized-light">Solarized Light</option></select></label></nav>
+    <nav aria-label="Primary"><a href="#features">Features</a><a href="#appearance">Appearance</a><a href="#technical">Technical</a><a class="nav-cta" href="https://github.com/bolens/omarchy-app-drawer">GitHub ↗</a><label class="theme-picker"><span>Theme</span><select data-theme-select aria-label="Site color theme"><option value="system">System</option><option value="time">Day cycle</option><option value="app-drawer">App Drawer</option><option value="tokyo-night">Tokyo Night</option><option value="catppuccin">Catppuccin</option><option value="gruvbox">Gruvbox</option><option value="nord">Nord</option><option value="github-dark">GitHub Dark</option><option value="github-light">GitHub Light</option><option value="catppuccin-latte">Catppuccin Latte</option><option value="solarized-light">Solarized Light</option></select></label></nav>
   </header>
   <main id="main">
     <section class="hero" id="top">
