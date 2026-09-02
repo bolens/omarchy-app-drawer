@@ -7,7 +7,7 @@
 [data-theme="github-light"] { color-scheme:light;--ink:#1f2328;--muted:#59636e;--bg:#ffffff;--panel:#f6f8fa;--line:#d0d7de;--violet:#8250df;--amber:#bf8700;--mint:#1a7f37 }
 [data-theme="catppuccin-latte"] { color-scheme:light;--ink:#4c4f69;--muted:#6c6f85;--bg:#eff1f5;--panel:#e6e9ef;--line:#bcc0cc;--violet:#8839ef;--amber:#df8e1d;--mint:#40a02b }
 [data-theme="solarized-light"] { color-scheme:light;--ink:#073642;--muted:#586e75;--bg:#fdf6e3;--panel:#eee8d5;--line:#93a1a1;--violet:#6c71c4;--amber:#b58900;--mint:#859900 }
-.theme-picker{display:flex;align-items:center;gap:.45rem;color:var(--muted);font-size:.72rem}.theme-picker span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.theme-picker select{max-width:9.5rem;padding:.42rem .65rem;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink);font:inherit;cursor:pointer}
+.theme-picker{display:flex;align-items:center;gap:.45rem;min-width:0;color:var(--muted);font-size:.72rem}.theme-picker span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.theme-picker select{width:11rem;max-width:100%;padding:.42rem .65rem;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink);font:inherit;cursor:pointer}
 :is([data-theme="github-light"],[data-theme="catppuccin-latte"],[data-theme="solarized-light"]) body{background-image:radial-gradient(circle at 82% 8%,color-mix(in srgb,var(--violet) 16%,transparent) 0,transparent 30rem)}
 :is([data-theme="github-light"],[data-theme="catppuccin-latte"],[data-theme="solarized-light"]) :is(.drawer-demo,.feature){background:linear-gradient(145deg,var(--panel),var(--bg));box-shadow:none}
 :is([data-theme="github-light"],[data-theme="catppuccin-latte"],[data-theme="solarized-light"]) :is(.bar-shell,.proof,.showcase figure,.terminal){background:var(--panel);border-color:var(--line)}
@@ -16,4 +16,5 @@
 :is([data-theme="github-light"],[data-theme="catppuccin-latte"],[data-theme="solarized-light"]) :is(.showcase .eyebrow,.showcase-copy>p){color:color-mix(in srgb,var(--ink) 72%,var(--amber))}
 :is([data-theme="github-light"],[data-theme="catppuccin-latte"],[data-theme="solarized-light"]) .showcase{background:var(--panel);border:1px solid var(--line)}
 :is([data-theme="github-light"],[data-theme="catppuccin-latte"],[data-theme="solarized-light"]) :is(.proof strong,.showcase .eyebrow,.showcase-copy>p,.install .eyebrow){color:var(--ink)}
-@media(max-width:800px){.theme-picker{margin-left:auto}.theme-picker select{max-width:8rem}}
+@media (max-width:800px){.theme-picker{margin-left:auto}}
+@media (max-width:520px){.site-header{height:auto;min-height:72px;flex-wrap:wrap;gap:.55rem;padding-block:.75rem}.site-header nav{flex:1 0 100%;width:100%;justify-content:flex-end}.theme-picker{margin-left:0}}

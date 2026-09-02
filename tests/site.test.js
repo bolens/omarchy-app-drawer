@@ -14,6 +14,7 @@ assert.match(html,/prefers-color-scheme: light/);assert.match(html,/\? "github-l
 assert.match(html,/localStorage\.getItem\(root\.dataset\.themeStorage\)/)
 assert.match(themeCss,/\[data-theme="github-light"\]\s*\{\s*color-scheme:light/);assert.match(themeJs,/if \(themeColor\)/);assert.match(themeJs,/if \(root\.dataset\.themeStorage\)/)
 assert.match(themeCss,/\.proof strong,[^}]*\.install \.eyebrow\)\{color:var\(--ink\)\}/)
+assert.match(themeCss,/\.theme-picker select\{width:11rem;max-width:100%/,"theme selector must fit long labels");assert.match(themeCss,/@media \(max-width:520px\)[\s\S]*?flex-wrap:wrap/,"mobile header must wrap before clipping the selector")
 assert.match(notFound,/prefers-color-scheme: light/);assert.match(notFound,/URLSearchParams/);assert.match(notFound,/root\.dataset\.themeStorage/)
 for(const style of ["taskbar","cascade","soft-cascade","uniform","instant"])
   {
