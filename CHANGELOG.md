@@ -5,6 +5,10 @@ All notable changes to App Drawer are documented here. The project follows
 
 ## [Unreleased]
 
+### Added
+
+- Pages code examples use theme-aware shell syntax highlighting without changing copied commands.
+
 ## [2.6.7] - 2026-09-01
 
 ### Added
