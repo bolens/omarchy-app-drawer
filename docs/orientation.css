@@ -1,0 +1,7 @@
+@media (orientation: landscape) and (max-height: 560px) {
+  .hero { min-height: auto; padding-block: 1.25rem; gap: 1.5rem; }
+  .hero h1 { font-size: clamp(2.75rem, 7vw, 3.5rem); }
+  .lede, .actions { margin-block: 0.65rem; }
+  .drawer-demo { align-self: start; }
+  .proof div { padding-block: 1rem; }
+}
