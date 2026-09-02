@@ -1,11 +1,12 @@
+pragma ComponentBehavior: Bound
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Wayland
 import QtQuick
-import QtQuick.Layouts
 import qs.Commons
 import qs.Ui
+import "Model.js" as Model
 import "BarModel.js" as BarModel
 
 Item {
@@ -1076,6 +1077,8 @@ Item {
       window: barWindow
     }
 
+    // Quickshell exposes margins as a grouped property; its qmltypes omit that scope.
+    // qmllint disable unqualified
     margins {
       top: root.barHidden && root.position === "top" ? -root.barSize : 0
       bottom: root.barHidden && root.position === "bottom" ? -root.barSize : 0
@@ -1083,6 +1086,7 @@ Item {
       right: root.barHidden && root.position === "right" ? -root.barSize : 0
     }
 
+    // qmllint enable unqualified
     anchors {
       top: root.position === "top" || root.vertical
       bottom: root.position === "bottom" || root.vertical
@@ -1121,7 +1125,6 @@ Item {
       implicitHeight: Math.ceil(tooltipBubble.implicitHeight)
 
       anchor {
-        id: tooltipAnchor
         window: barWindow
         adjustment: PopupAdjustment.Slide
         edges: Edges.Top | Edges.Left
@@ -1149,8 +1152,8 @@ Item {
           }
 
           var point = barWindow.contentItem.mapFromItem(target, localX, localY)
-          tooltipAnchor.rect.x = Math.round(point.x)
-          tooltipAnchor.rect.y = Math.round(point.y)
+          tooltipWindow.anchor.rect.x = Math.round(point.x)
+          tooltipWindow.anchor.rect.y = Math.round(point.y)
         }
       }
 

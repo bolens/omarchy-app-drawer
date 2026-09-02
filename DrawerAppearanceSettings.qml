@@ -1,3 +1,4 @@
+pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -75,18 +76,19 @@ Flickable {
           {key: "verticalPadding", label: "Vertical padding", minimum: 2, maximum: 12}
         ]
         ColumnLayout {
+          id: sizeEditor
           required property var modelData
           Layout.fillWidth: true
           Layout.preferredWidth: 1
-          Text { text: modelData.label; color: Color.muted; font.family: Style.font.family; font.pixelSize: Style.font.caption }
+          Text { text: sizeEditor.modelData.label; color: Color.muted; font.family: Style.font.family; font.pixelSize: Style.font.caption }
           TextField {
-            objectName: modelData.key + "Editor"
+            objectName: sizeEditor.modelData.key + "Editor"
             Layout.fillWidth: true
-            text: String(root.appearance[modelData.key])
+            text: String(root.appearance[sizeEditor.modelData.key])
             foreground: Color.popups.text
             accent: Color.bar.active
-            validator: IntValidator { bottom: modelData.minimum; top: modelData.maximum }
-            onEditingFinished: { var patch = {}; patch[modelData.key] = Number(text); root.save(patch) }
+            validator: IntValidator { bottom: sizeEditor.modelData.minimum; top: sizeEditor.modelData.maximum }
+            onEditingFinished: { var patch = {}; patch[sizeEditor.modelData.key] = Number(text); root.save(patch) }
           }
         }
       }
