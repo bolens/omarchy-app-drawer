@@ -9,6 +9,8 @@ updates:
     groups:
       github-actions:
         patterns: ["*"]
+    cooldown:
+      default-days: 7
   - package-ecosystem: npm
     directory: /
     schedule:
@@ -18,9 +20,13 @@ updates:
     groups:
       site-tooling:
         dependency-type: development
+    cooldown:
+      default-days: 7
   - package-ecosystem: docker
     directory: /.github/ci
     schedule:
       interval: weekly
       day: monday
     labels: [dependencies, docker]
+    cooldown:
+      default-days: 7
