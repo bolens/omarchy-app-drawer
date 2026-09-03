@@ -6,6 +6,8 @@ const themeCss=fs.readFileSync("docs/theme.css","utf8"),themeJs=fs.readFileSync(
 const syntaxCss=fs.readFileSync("docs/syntax-highlight.css","utf8"),syntaxJs=fs.readFileSync("docs/syntax-highlight.js","utf8")
 const notFound=fs.readFileSync("docs/404.html","utf8")
 const previewBuilder=fs.readFileSync("scripts/build-motion-previews","utf8")
+for(const file of ["robots.txt","sitemap.xml","llms.txt"]) assert.ok(fs.existsSync(`docs/${file}`),`missing discovery file ${file}`)
+for(const [,url] of fs.readFileSync("docs/sitemap.xml","utf8").matchAll(/<loc>([^<]+)<\/loc>/g)) assert.ok(fs.readFileSync("docs/llms.txt","utf8").includes(url),`llms.txt missing ${url}`)
 for(const id of ["main","features","appearance","technical","install"]) assert.ok(html.includes(`id="${id}"`),`missing section ${id}`)
 for(const asset of ["styles.css","theme.css","theme.js","motion-gallery.css","site.js","syntax-highlight.css","syntax-highlight.js","favicon.svg","apple-touch-icon.png","site.webmanifest","social-card.png"]) assert.ok(html.includes(asset),`missing asset ${asset}`)
 for(const token of ["sh-command","sh-option","sh-string","sh-variable","sh-operator","sh-comment"]) assert.ok(syntaxCss.includes(token),"syntax palette must define " + token)
