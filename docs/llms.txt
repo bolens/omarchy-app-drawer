@@ -1,0 +1,13 @@
+# Omarchy App Drawer
+
+Omarchy App Drawer is an application launcher plugin for Omarchy. The site describes its interface, installation, keyboard use, configuration, and release history.
+
+## Documentation
+
+- Overview: https://bolens.github.io/omarchy-app-drawer/
+- Changelog: https://bolens.github.io/omarchy-app-drawer/changelog/
+
+## Source
+
+- Repository: https://github.com/bolens/omarchy-app-drawer
+- Issues: https://github.com/bolens/omarchy-app-drawer/issues
