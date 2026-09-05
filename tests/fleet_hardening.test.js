@@ -1,5 +1,8 @@
 const assert = require("node:assert/strict")
 const fs = require("node:fs")
+const os = require("node:os")
+const path = require("node:path")
+const { execFileSync } = require("node:child_process")
 
 const read = path => fs.readFileSync(path, "utf8")
 const ci = read(".github/workflows/ci.yml")
@@ -78,6 +81,28 @@ assert.match(runner, /omarchy plugin validate "\$validation_dir"/)
 assert.match(preCommit, /archive "\$\(git -C "\$root" write-tree\)"/)
 assert.match(preCommit, /OMABAR_QML_TESTS=never OMABAR_LIVE_TESTS=never/)
 assert.ok(fs.statSync(".githooks/pre-commit").mode & 0o100)
+
+const hookSandbox = fs.mkdtempSync(path.join(os.tmpdir(), "drawer-push-hook-"))
+try {
+  const stubs = {
+    git: 'printf "%s\\n" "$HOOK_TEST_ROOT"',
+    npm: 'if [ "$1" = test ]; then printf "%s %s %s\\n" "${OMABAR_QML_TESTS-}" "${OMABAR_LIVE_TESTS-}" "${OMABAR_STRESS_TESTS-}"; fi',
+    python3: ':',
+    actionlint: ':',
+    zizmor: ':',
+  }
+  for (const [name, body] of Object.entries(stubs))
+    fs.writeFileSync(path.join(hookSandbox, name), `#!/bin/sh\n${body}\n`, { mode: 0o755 })
+  const env = { ...process.env, PATH: `${hookSandbox}:${process.env.PATH}`, HOOK_TEST_ROOT: process.cwd() }
+  for (const key of ["OMABAR_QML_TESTS", "OMABAR_LIVE_TESTS", "OMABAR_STRESS_TESTS"]) delete env[key]
+  const runHook = overrides => execFileSync("bash", [".githooks/pre-push"], {
+    env: { ...env, ...overrides }, encoding: "utf8",
+  }).trim()
+  assert.equal(runHook({}), "never never never", "ordinary pushes must not touch the live desktop")
+  assert.equal(runHook({ OMABAR_QML_TESTS: "always", OMABAR_LIVE_TESTS: "always", OMABAR_STRESS_TESTS: "always" }), "always always always", "explicit runtime checks remain available")
+} finally {
+  fs.rmSync(hookSandbox, { recursive: true, force: true })
+}
 
 assert.match(release, /actions\/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8/)
 assert.match(release, /id-token:\s*write/)

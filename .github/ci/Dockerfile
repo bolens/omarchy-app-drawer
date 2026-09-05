@@ -1,4 +1,4 @@
-FROM archlinux@sha256:4bf33b21a715aac0b48ce6e9eaed4782a898eae96f88f5da3635572129c2584a
+FROM archlinux@sha256:82b1b08faae9d61e3e7e13d562f4d09114d939105b0d59ff34140f3bd418593a
 
 LABEL org.opencontainers.image.source="https://github.com/bolens/omarchy-app-drawer"
 LABEL org.opencontainers.image.description="Pinned test toolchain for bolens Omarchy plugins"

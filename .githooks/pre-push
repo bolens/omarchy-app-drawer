@@ -2,6 +2,9 @@
 set -euo pipefail
 root=$(git rev-parse --show-toplevel)
 cd "$root"
+export OMABAR_QML_TESTS=${OMABAR_QML_TESTS:-never}
+export OMABAR_LIVE_TESTS=${OMABAR_LIVE_TESTS:-never}
+export OMABAR_STRESS_TESTS=${OMABAR_STRESS_TESTS:-never}
 npm test
 npm run build:site
 python3 scripts/check-changelog.py
