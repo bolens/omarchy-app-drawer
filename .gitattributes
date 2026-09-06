@@ -16,3 +16,8 @@
 /devenv.nix export-ignore
 /devenv.yaml export-ignore
 /devenv.lock export-ignore
+
+*.webp binary
+
+# Editor settings are not part of the installed plugin.
+/.editorconfig export-ignore
