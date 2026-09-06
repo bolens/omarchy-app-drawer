@@ -1,5 +1,7 @@
 # omarchy-app-drawer Spec Kit project guide
 
+[Documentation](../../DOCUMENTATION.md)
+
 A stock-bar App Drawer plugin with per-monitor presentation and serialized shared
 settings.
 

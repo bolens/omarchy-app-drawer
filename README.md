@@ -1,10 +1,12 @@
 # App Drawer
 
+[Documentation](DOCUMENTATION.md)
+
 A compact, per-monitor drawer for Omarchy Shell's stock bar. It keeps the stock bar and its background services mounted, then smoothly reveals or collapses the widgets to the right of the drawer.
 
 [User guide](https://bolens.github.io/omarchy-app-drawer/) · [Report an issue](https://github.com/bolens/omarchy-app-drawer/issues/new/choose) · [Security policy](SECURITY.md)
 
-### Collapsed
+## Collapsed
 
 ![App Drawer collapsed](screenshots/collapsed.png)
 

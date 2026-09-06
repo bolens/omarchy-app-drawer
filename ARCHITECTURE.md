@@ -1,5 +1,7 @@
 # Architecture
 
+[Documentation](DOCUMENTATION.md)
+
 `Model.js` owns pure normalization, bounded settings, animation policy, and
 state transitions. `Service.qml` is the sole IPC, persistence, monitor
 registration, and mutation authority. `BarWidget.qml` is the monitor-local
