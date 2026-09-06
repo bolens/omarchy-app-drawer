@@ -39,3 +39,7 @@ The script records each animation style at 60 frames per second. It restores
 the appearance, each monitor's expanded state and interaction mode, and the
 previously open settings panel. The script fails if restoration or Quickshell
 process identity changes.
+
+## Portable development gate
+
+Run `bash tests/run_all.sh --portable` for deterministic Node and container-adapter tests without a desktop installation. This explicit mode reports the omitted Qt, plugin archive, QML runtime, live IPC, and stress checks. The default `npm test` behavior and full CI requirements remain unchanged.

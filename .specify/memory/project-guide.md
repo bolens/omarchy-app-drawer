@@ -31,10 +31,10 @@ Record both model and QML runtime evidence when behavior crosses the engine boun
 ## Validation and operational limits
 
 ```sh
-OMABAR_QML_TESTS=never OMABAR_LIVE_TESTS=never OMABAR_STRESS_TESTS=never npm test
+bash tests/run_all.sh --portable
 ```
 
-Portable tests need the documented Omarchy imports and Qt tools. Graphical, live IPC,
+Portable mode runs model and contract checks without desktop dependencies. The full `npm test` gate requires the documented Omarchy imports and Qt tools. Graphical, live IPC,
 stress, and screenshot checks require explicit scope and owned temporary roots. Never
 restart or terminate unrelated shell processes as part of static validation.
 
