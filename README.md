@@ -82,3 +82,8 @@ checks that the Quickshell process inventory does not change.
 ## Credits and license
 
 This is a modified hard fork of [OmaBar Drawer](https://github.com/amitcpatel/omabar-drawer) by Amit Patel, which derives from Omarchy's bar by David Heinemeier Hansson. Hard-fork architecture and subsequent work are by bolens. The upstream notices are preserved under the MIT license in [LICENSE](LICENSE); see [NOTICE](NOTICE) for provenance.
+
+## License scope and attribution
+
+See [third-party notices](THIRD_PARTY_NOTICES.md) for the project license scope,
+retained upstream notices, and dependency or asset exceptions.
