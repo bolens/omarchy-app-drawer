@@ -1,5 +1,7 @@
 # Testing
 
+[Documentation](DOCUMENTATION.md)
+
 Run `npm test` for pure, randomized, manifest, migration, crash-safety, QML
 lint, plugin validation, isolated runtime, and auto-detected live checks.
 
