@@ -117,7 +117,8 @@ assert.match(release, /persist-credentials:\s*false/)
 
 assert.equal(packageMetadata.engines.node, ">=24.19.0")
 assert.equal(packageMetadata.packageManager, "npm@11.19.0")
-assert.equal((dependabot.match(/interval:\s*weekly/g) || []).length, 3)
+assert.equal((dependabot.match(/interval:\s*weekly/g) || []).length, 4)
+assert.match(dependabot, /package-ecosystem:\s*docker[\s\S]*directory:\s*["']?\/\.devcontainer/)
 assert.match(dependabot, /package-ecosystem:\s*docker[\s\S]*directory:\s*\/\.github\/ci/)
 
 assert.match(ciDockerfile, /^FROM archlinux@sha256:[a-f0-9]{64}$/m)
