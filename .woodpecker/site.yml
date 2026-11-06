@@ -24,5 +24,9 @@ steps:
       - npm run test:site
   - name: accessibility
     image: ghcr.io/puppeteer/puppeteer@sha256:956a72e3d523c76606efaad23392fbe33950370189f749715222c7427f57392b
+    environment:
+      HOME: /tmp/owned-home
+      PUPPETEER_CACHE_DIR: /home/pptruser/.cache/puppeteer
     commands:
+      - mkdir -p "$HOME"
       - node scripts/audit-site.mjs

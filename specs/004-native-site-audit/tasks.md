@@ -9,7 +9,7 @@
 
 - [x] T003 [US1] Implement owned server/browser readiness and exact score1 propagation in scripts/audit-site.mjs.
 - [x] T004 [US1] Add serial pinned build/audit configuration in .woodpecker/site.yml.
-- [ ] T005 [US1] Verify missing-input failure and run the actual unprivileged pinned browser image on a built site.
+- [x] T005 [US1] Verify missing-input failure and run the actual unprivileged pinned browser image on a built site (candidate017a: Node24.21.0, Chrome156.0.8078.47, score1, all phases exit0).
 
 ## Phase 3: User Story2 - Preserve delivery protections
 

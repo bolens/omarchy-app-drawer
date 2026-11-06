@@ -69,7 +69,7 @@ under a non-root user with a read-only image and no host Docker socket. Review
 native workflow image pins monthly and after security releases; Dependabot's
 Dockerfile coverage does not discover `.woodpecker/` image references.
 
-## Native site audit proposal
+## Woodpecker site accessibility
 
 The native `site` workflow builds the existing Pages payload, runs its structure
 tests, then runs `node scripts/audit-site.mjs` in the pinned official
