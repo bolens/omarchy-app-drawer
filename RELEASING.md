@@ -75,6 +75,30 @@ under a non-root user with a read-only image and no host Docker socket. Review
 native workflow image pins monthly and after security releases; Dependabot's
 Dockerfile coverage does not discover `.woodpecker/` image references.
 
+## Omarchy CI toolchain image
+
+The image definition in [`.github/ci/Dockerfile`](.github/ci/Dockerfile) uses the
+signed Arch archive dated 2026-11-06. It asserts Quickshell 0.3.2, Qt 6.12.0,
+Labwc 0.20.2 and Xwayland 24.1.14. Labwc and the DejaVu fonts support isolated
+software-rendered layer-shell tests; Xwayland provides the executable used by
+packaged Labwc's lazy Xwayland integration and stays lazy during Wayland-only tests. These packages do not start
+services or expose a host display during image creation.
+
+Advance the archive date and package assertions together. Build a private
+candidate and verify package versions, QML metadata and tool binaries. Test a
+private headless compositor with real Wayland registry/sync readiness and actual
+layer-shell frames, using a non-root container with no network, host display,
+devices or extra capabilities. Check clean compositor output and owned-process
+cleanup. A successful image build alone does not establish plugin compatibility.
+
+Merge the image definition through a normal pull request. The existing CI image
+workflow publishes from `main`; do not publish an unmerged local candidate with
+registry credentials. Verify the actual published digest against the qualified
+candidate's package and metadata contract, then run all four plugins' QML,
+negative-control and runtime gates before changing consumer pins. Native,
+release-validation and compatibility workflows must adopt the verified immutable
+digest together. This image-definition change leaves their current pins intact.
+
 ## Woodpecker site accessibility
 
 The native `site` workflow builds the existing Pages payload, runs its structure
