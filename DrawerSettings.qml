@@ -3,6 +3,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import qs.Commons
+import qs.Commons as Commons
 import qs.Ui
 import "Model.js" as Model
 
@@ -42,7 +43,7 @@ Item {
       Layout.fillWidth: true
       text: "App Drawer"
       textFormat: Text.PlainText
-      color: Color.popups.text
+      color: Commons.Color.popups.text
       font.family: Style.font.family
       font.pixelSize: Style.font.title
       font.bold: true
@@ -53,7 +54,7 @@ Item {
         ? "Per-monitor behavior; glyphs and styling are shared."
         : "Keep selected widgets visible while this monitor is collapsed. Pins are shared."
       textFormat: Text.PlainText
-      color: Color.muted
+      color: Commons.Color.muted
       font.family: Style.font.family
       font.pixelSize: Style.font.bodySmall
       wrapMode: Text.WordWrap
@@ -72,7 +73,7 @@ Item {
       Layout.fillHeight: true
       Layout.minimumHeight: Style.space(180)
       radius: Style.space(8)
-      color: Qt.lighter(Color.popups.background, 1.08)
+      color: Qt.lighter(Commons.Color.popups.background, 1.08)
       clip: true
 
       Flickable {
@@ -99,8 +100,8 @@ Item {
               label: root.service ? root.service.displayName(modelData) : Model.entryId(modelData)
               description: Model.entryId(modelData)
               checked: root.service && root.service.drawerState.alwaysVisible.indexOf(Model.entryId(modelData)) !== -1
-              foreground: Color.popups.text
-              accent: Color.bar.active
+              foreground: Commons.Color.popups.text
+              accent: Commons.Color.bar.active
               fontFamily: Style.font.family
               titleSize: Style.font.bodySmall
               descriptionSize: Style.font.caption
@@ -124,7 +125,7 @@ Item {
       visible: !!root.service && root.service.lastError !== ""
       text: root.service ? root.service.lastError : ""
       textFormat: Text.PlainText
-      color: Color.urgent
+      color: Commons.Color.urgent
       font.family: Style.font.family
       font.pixelSize: Style.font.caption
       wrapMode: Text.WordWrap
@@ -134,7 +135,7 @@ Item {
       visible: !!root.service && root.service.mutationStatus !== "" && root.service.lastError === ""
       text: root.service ? (root.service.mutationStatus === "saving" ? "Saving changes…" : "Changes applied") : ""
       textFormat: Text.PlainText
-      color: Color.muted
+      color: Commons.Color.muted
       font.family: Style.font.family
       font.pixelSize: Style.font.caption
     }

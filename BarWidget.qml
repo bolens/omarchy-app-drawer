@@ -2,8 +2,10 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import qs.Commons
+import qs.Commons as Commons
 import qs.Ui
 import "Model.js" as Model
+import "DrawerHostProtocol.js" as HostProtocol
 
 Item {
   id: root
@@ -27,7 +29,7 @@ Item {
   property real previousBindingTotalExtent: -1
   property int stableBindingMeasurements: 0
   property real pendingRevealProgress: -1
-  readonly property var presentationScreen: root.QsWindow.window ? root.QsWindow.window.screen : null
+  readonly property var presentationScreen: HostProtocol.windowScreen(root.QsWindow.window)
   readonly property string presentationScreenName: presentationScreen ? presentationScreen.name : "unknown"
   readonly property bool localExpanded: drawerService ? drawerService.expandedFor(presentationScreenName) : true
   readonly property string localMode: drawerService ? drawerService.modeFor(presentationScreenName) : "toggle"
@@ -114,10 +116,10 @@ Item {
     }
   }
   function themeColor(role) {
-    if (role === "accent") return Color.bar.active
-    if (role === "urgent") return bar ? bar.urgent : Color.urgent
-    if (role === "muted") return Color.muted
-    return bar ? bar.barForeground : Color.foreground
+    if (role === "accent") return Commons.Color.bar.active
+    if (role === "urgent") return bar ? bar.urgent : Commons.Color.urgent
+    if (role === "muted") return Commons.Color.muted
+    return bar ? bar.barForeground : Commons.Color.foreground
   }
   function runAction(action) {
     if (!drawerService || action === "none") return
@@ -136,12 +138,7 @@ Item {
   }
 
   function ownSlot() {
-    var candidate = root.parent
-    while (candidate) {
-      if (candidate.moduleName === root.moduleName && candidate.region === "right") return candidate
-      candidate = candidate.parent
-    }
-    return null
+    return HostProtocol.slotOwner(root.parent, root.moduleName, "right")
   }
   function implicitWidthBinding(slot) { return function() { return slot.implicitWidth } }
   function implicitHeightBinding(slot) { return function() { return slot.implicitHeight } }
@@ -167,8 +164,8 @@ Item {
     }
   }
   function restoreTransitionSlots() {
-    for (var slotIndex = 0; slotIndex < transitionSlots.length; slotIndex++) {
-      var slot = transitionSlots[slotIndex]
+    for (let slotIndex = 0; slotIndex < transitionSlots.length; slotIndex++) {
+      let slot = transitionSlots[slotIndex]
       if (!slot) continue
       slot.clip = false
       slot.opacity = 1
@@ -214,17 +211,17 @@ Item {
     if (slots.length === 0) { finishSlotBindingMeasurement(); return }
     transitionSlots = slots
     var extents = []
-    for (var index = 0; index < slots.length; index++) {
-      var slot = slots[index]
-      var extent = bar && bar.vertical ? slot.implicitHeight : slot.implicitWidth
+    for (let index = 0; index < slots.length; index++) {
+      let slot = slots[index]
+      let extent = bar && bar.vertical ? slot.implicitHeight : slot.implicitWidth
       extents.push(extent)
       lastAnimationTotalExtent += extent
     }
     var totalExtent = lastAnimationTotalExtent
     var trailingExtent = 0
-    for (var reverseIndex = slots.length - 1; reverseIndex >= 0; reverseIndex--) {
-      slot = slots[reverseIndex]
-      extent = extents[reverseIndex]
+    for (let reverseIndex = slots.length - 1; reverseIndex >= 0; reverseIndex--) {
+      const slot = slots[reverseIndex]
+      const extent = extents[reverseIndex]
       slot.clip = Qt.binding(root.animatedClipBinding())
       slot.opacity = Qt.binding(root.animatedOpacityBinding(extent, trailingExtent, totalExtent))
       if (bar && bar.vertical)
@@ -243,7 +240,7 @@ Item {
     previousBindingTotalExtent = lastAnimationTotalExtent
     bindingAttempts++
     if (pendingRevealProgress >= 0) {
-      var target = pendingRevealProgress
+      let target = pendingRevealProgress
       pendingRevealProgress = -1
       revealProgress = target
     }

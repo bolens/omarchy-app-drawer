@@ -9,6 +9,10 @@ All notable changes to App Drawer are documented here. The project follows
 
 - Pages code examples use theme-aware shell syntax highlighting without changing copied commands.
 
+### Fixed
+
+- Keep plugin colors tied to Omarchy’s palette on Qt 6.12.
+
 ## [2.6.7] - 2026-09-01
 
 ### Added

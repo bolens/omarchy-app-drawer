@@ -58,14 +58,14 @@ Item {
 
   function openSettingsFor(preferred, page) {
     var selected = null
-    for (var index = 0; index < widgetInstances.length; index++) {
-      var instance = widgetInstances[index].instance
+    for (let index = 0; index < widgetInstances.length; index++) {
+      let instance = widgetInstances[index].instance
       if (!selected && instance && typeof instance.showSettings === "function") selected = instance
       if (instance === preferred && typeof instance.showSettings === "function") selected = instance
     }
     if (!selected) return fail("no live bar widget is available")
-    for (index = 0; index < widgetInstances.length; index++) {
-      instance = widgetInstances[index].instance
+    for (let index = 0; index < widgetInstances.length; index++) {
+      const instance = widgetInstances[index].instance
       if (instance !== selected && instance && typeof instance.closeSettings === "function")
         instance.closeSettings()
     }
@@ -79,8 +79,8 @@ Item {
 
   function widgetForScreen(screenName) {
     var key = String(screenName || "").trim()
-    for (var index = 0; index < widgetInstances.length; index++) {
-      var record = widgetInstances[index]
+    for (let index = 0; index < widgetInstances.length; index++) {
+      let record = widgetInstances[index]
       if (record && record.screenName === key && record.instance) return record.instance
     }
     return null
@@ -121,8 +121,8 @@ Item {
 
   function closeSettings() {
     var closed = false
-    for (var index = 0; index < widgetInstances.length; index++) {
-      var instance = widgetInstances[index].instance
+    for (let index = 0; index < widgetInstances.length; index++) {
+      let instance = widgetInstances[index].instance
       if (instance && typeof instance.closeSettings === "function") {
         instance.closeSettings()
         closed = true
@@ -135,10 +135,10 @@ Item {
 
   function settingsStatus() {
     var fallback = null
-    for (var index = 0; index < widgetInstances.length; index++) {
-      var instance = widgetInstances[index].instance
+    for (let index = 0; index < widgetInstances.length; index++) {
+      let instance = widgetInstances[index].instance
       if (instance && typeof instance.settingsStatus === "function") {
-        var status = instance.settingsStatus()
+        let status = instance.settingsStatus()
         if (!fallback) fallback = status
         if (status.open || status.requestedOpen) return JSON.stringify(status)
       }
@@ -207,8 +207,8 @@ Item {
     var next = Object.assign({}, monitorIntents)
     var changed = false
     var keys = Object.keys(next)
-    for (var index = 0; index < keys.length; index++) {
-      var key = keys[index]
+    for (let index = 0; index < keys.length; index++) {
+      let key = keys[index]
       if (Object.prototype.hasOwnProperty.call(states, key) && states[key] === next[key]) {
         delete next[key]
         changed = true
@@ -313,13 +313,13 @@ Item {
     })
     if (screens.length === 0) return fail("no live monitor is available")
     var intents = Object.assign({}, monitorIntents)
-    for (var intentIndex = 0; intentIndex < screens.length; intentIndex++) intents[screens[intentIndex]] = requested
+    for (let intentIndex = 0; intentIndex < screens.length; intentIndex++) intents[screens[intentIndex]] = requested
     var previousIntents = monitorIntents
     monitorIntents = intents
     lastError = ""
     if (!persistConfig(function(config) {
       root.prepareMountedLayout(config)
-      for (var index = 0; index < screens.length; index++) Model.applyMonitorExpanded(config, screens[index], requested)
+      for (let index = 0; index < screens.length; index++) Model.applyMonitorExpanded(config, screens[index], requested)
     })) {
       monitorIntents = previousIntents
       return "error: " + lastError
@@ -395,7 +395,7 @@ Item {
         && !flushQueuedSettings()) return "error: " + lastError
     var currentAppearance = currentState().appearance
     var merged = Object.assign({}, currentAppearance)
-    for (var key in patch) merged[key] = patch[key]
+    for (let key in patch) merged[key] = patch[key]
     var normalized = Model.appearanceSettings(merged)
     if (JSON.stringify(normalized) === JSON.stringify(currentAppearance)) {
       lastError = ""
@@ -411,10 +411,10 @@ Item {
   function queueAppearance(patch) {
     if (!Model.isObject(patch)) return fail("appearance patch must be an object")
     var next = Model.isObject(pendingAppearancePatch) ? Object.assign({}, pendingAppearancePatch) : ({})
-    for (var key in patch) next[key] = patch[key]
+    for (let key in patch) next[key] = patch[key]
     var currentAppearance = currentState().appearance
     var merged = Object.assign({}, currentAppearance)
-    for (var pendingKey in next) merged[pendingKey] = next[pendingKey]
+    for (let pendingKey in next) merged[pendingKey] = next[pendingKey]
     if (JSON.stringify(Model.appearanceSettings(merged)) === JSON.stringify(currentAppearance)
         && !Model.isObject(pendingPinChanges)) {
       pendingAppearancePatch = null
@@ -447,8 +447,8 @@ Item {
         Model.migrateConfig(config)
         if (Model.isObject(appearancePatch)) Model.applyAppearance(config, appearancePatch)
         if (Model.isObject(pinChanges)) {
-          var ids = Object.keys(pinChanges).sort()
-          for (var index = 0; index < ids.length; index++) Model.applyPinned(config, ids[index], pinChanges[ids[index]])
+          let ids = Object.keys(pinChanges).sort()
+          for (let index = 0; index < ids.length; index++) Model.applyPinned(config, ids[index], pinChanges[ids[index]])
         }
       })
       mutationSerial++
@@ -456,7 +456,7 @@ Item {
       mutationStatus = "saved"
       mutationDetail = ""
     } catch (error) {
-      var detail = String(error && error.message ? error.message : error)
+      let detail = String(error && error.message ? error.message : error)
       pendingAppearancePatch = appearancePatch
       pendingPinChanges = pinChanges
       fail(detail)
@@ -491,10 +491,10 @@ Item {
 
   function statusObject() {
     var presentations = []
-    for (var index = 0; index < widgetInstances.length; index++) {
-      var instance = widgetInstances[index].instance
+    for (let index = 0; index < widgetInstances.length; index++) {
+      let instance = widgetInstances[index].instance
       if (instance && typeof instance.animationStatus === "function") {
-        var presentation = instance.animationStatus()
+        let presentation = instance.animationStatus()
         presentation.registrationGeneration = widgetInstances[index].generation
         presentations.push(presentation)
       }
