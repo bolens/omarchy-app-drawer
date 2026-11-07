@@ -11,6 +11,7 @@ RUN printf '%s\n' 'Server = https://archive.archlinux.org/repos/2026/11/06/$repo
       labwc \
       nodejs \
       npm \
+      pipewire \
       python \
       quickshell \
       qt6-declarative \
@@ -18,6 +19,9 @@ RUN printf '%s\n' 'Server = https://archive.archlinux.org/repos/2026/11/06/$repo
       shellcheck \
       ttf-dejavu \
       xorg-xwayland \
+    && test "$(pacman -Q pipewire)" = 'pipewire 1:1.6.10-1' \
+    && test "$(pacman -Q libpipewire)" = 'libpipewire 1:1.6.10-1' \
+    && test -f /usr/share/pipewire/client.conf \
     && test "$(pacman -Q xorg-xwayland)" = 'xorg-xwayland 24.1.14-1' \
     && test "$(pacman -Q labwc)" = 'labwc 0.20.2-1' \
     && test "$(pacman -Q quickshell)" = 'quickshell 0.3.2-1' \
