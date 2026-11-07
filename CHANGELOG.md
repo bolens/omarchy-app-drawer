@@ -7,6 +7,8 @@ All notable changes to App Drawer are documented here. The project follows
 
 ### Added
 
+- Add native repository policy checks alongside the existing protected GitHub checks.
+
 - Pages code examples use theme-aware shell syntax highlighting without changing copied commands.
 
 ### Fixed
