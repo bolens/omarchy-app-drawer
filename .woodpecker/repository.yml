@@ -21,5 +21,5 @@ steps:
   - name: repository-documents
     image: node:26-trixie@sha256:6d2c7d5d074bf72f81ddc252b4fbb5d625bc028eeda49cb4b8c2ff8eda1ee617
     commands:
-      - apt-get update && apt-get install -y --no-install-recommends git curl ca-certificates python3 libxml2-utils tidy
+      - apt-get update && apt-get install -y --no-install-recommends git jq curl ca-certificates python3 libxml2-utils tidy
       - bash scripts/woodpecker-repository.sh --documents
