@@ -79,6 +79,7 @@ run_harness() {
 }
 
 failures=0
+run_harness RuntimePaletteContractTest.qml PALETTE_QML_CONTRACT_OK || failures=1
 run_harness RuntimeModelTest.qml DRAWER_QML_MODEL_OK || failures=1
 run_harness RuntimeServiceTest.qml DRAWER_QML_SERVICE_OK || failures=1
 run_harness RuntimeSettingsTest.qml DRAWER_QML_SETTINGS_OK || failures=1

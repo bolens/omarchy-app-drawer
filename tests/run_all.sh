@@ -27,17 +27,24 @@ persistent_shell_inventory() {
 for test_file in tests/*.test.js; do
   node "$test_file"
 done
-python3 -m unittest discover -s tests -p 'test_development_container.py'
+python3 -m unittest discover -s tests -p 'test_*.py'
 if [[ $portable == true ]]; then
   printf 'Portable validation passed; Qt, plugin archive, QML runtime, live IPC, and stress checks require the full host gate.\n'
   exit 0
 fi
 omarchy_path=${OMARCHY_PATH:-/home/panda/.local/share/omarchy-overlay}
 qmllint_bin=${QMLLINT:-/usr/lib/qt6/bin/qmllint}
+shell_root=${OMARCHY_SHELL_ROOT:-$omarchy_path/shell}
+qml_import_args=(-I "$shell_root")
+if [[ -n ${QML_TOOLING_IMPORT_ROOT:-} ]]; then
+  qml_import_args=(--bare -I "$QML_TOOLING_IMPORT_ROOT" -I "$shell_root" -I . -I /usr/lib/qt6/qml)
+fi
 [[ -x "$qmllint_bin" ]] || { printf 'Qt 6 qmllint not found: %s\n' "$qmllint_bin" >&2; exit 1; }
-"$qmllint_bin" -I "$omarchy_path/shell" -i "$plugin_dir/qmldir" \
-  -i "$omarchy_path/shell/Commons/qmldir" -i "$omarchy_path/shell/Ui/qmldir" \
-  Button.qml WidgetButton.qml PlainTextToggle.qml BarWidget.qml DrawerSettings.qml DrawerAppearanceSettings.qml Service.qml Bar.qml
+"$qmllint_bin" "${qml_import_args[@]}" -i "$plugin_dir/qmldir" \
+  -i "$shell_root/Commons/qmldir" -i "$shell_root/Ui/qmldir" \
+  Button.qml WidgetButton.qml PlainTextToggle.qml BarWidget.qml DrawerSettings.qml DrawerAppearanceSettings.qml Service.qml Bar.qml tests/qml/RuntimePaletteContractTest.qml
+python3 "$plugin_dir/scripts/check-qml-lint-controls.py" --qmllint "$qmllint_bin" \
+  --shell-root "$shell_root" --policy "$plugin_dir/.qmllint.ini"
 if [[ ${OMARCHY_SKIP_VALIDATE:-0} != 1 ]]; then
   validation_dir=$(mktemp -d)
   trap 'rm -rf -- "$validation_dir"' EXIT

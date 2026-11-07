@@ -29,7 +29,7 @@ assert.match(widgetButton, /activeFocusOnTab:[\s\S]*Keys\.onSpacePressed:[\s\S]*
   "drawer bar targets must support keyboard and assistive activation")
 assert.match(widget, /if \(bar && bar\.vertical\)[\s\S]*slot\.height = Qt\.binding\(root\.implicitHeightBinding\(slot\)\)/,
   "vertical drawer transitions must restore height rather than horizontal width")
-assert.match(widget, /var extent = bar && bar\.vertical \? slot\.implicitHeight : slot\.implicitWidth/,
+assert.match(widget, /(?:var|let|const) extent = bar && bar\.vertical \? slot\.implicitHeight : slot\.implicitWidth/,
   "drawer reveal geometry must follow the active bar axis")
 assert.match(legacyBar, /!!\(hyprMonitor && hyprMonitor\.activeWorkspace[\s\S]*hyprMonitor\.activeWorkspace\.hasFullscreen === true\)/,
   "each vendored bar must track fullscreen state on its own monitor")
@@ -176,7 +176,7 @@ assert.match(model, /fadeSpan = style === "cascade" \? 0\.22 : 0\.55/,
   "cascade styles must use visibly distinct bounded opacity waves")
 assert.match(model, /mode === "uniform"\) return p \* p \* p/,
   "uniform style must use a pronounced whole-drawer fade")
-assert.match(widget, /for \(var reverseIndex = slots\.length - 1; reverseIndex >= 0; reverseIndex--\)/,
+assert.match(widget, /for \((?:var|let) reverseIndex = slots\.length - 1; reverseIndex >= 0; reverseIndex--\)/,
   "taskbar-style reveal must expose the slot nearest the toggle first")
 assert.match(widget, /transitionTopologyKey[\s\S]*onTransitionTopologyKeyChanged:\s*scheduleSlotBinding/,
   "monitor state changes must not tear down slot bindings during animation")

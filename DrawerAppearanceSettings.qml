@@ -3,6 +3,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import qs.Commons
+import qs.Commons as Commons
 import qs.Ui
 
 Flickable {
@@ -32,7 +33,7 @@ Flickable {
     Text {
       Layout.fillWidth: true
       text: "Glyphs and spacing"
-      color: Color.popups.text
+      color: Commons.Color.popups.text
       font.family: Style.font.family
       font.pixelSize: Style.font.body
       font.bold: true
@@ -42,25 +43,25 @@ Flickable {
       spacing: Style.space(8)
       ColumnLayout {
         Layout.fillWidth: true
-        Text { text: "Collapsed glyph"; color: Color.muted; font.family: Style.font.family; font.pixelSize: Style.font.caption }
+        Text { text: "Collapsed glyph"; color: Commons.Color.muted; font.family: Style.font.family; font.pixelSize: Style.font.caption }
         TextField {
           objectName: "collapsedGlyphEditor"
           Layout.fillWidth: true
           text: String(root.appearance.collapsedGlyph || "")
-          foreground: Color.popups.text
-          accent: Color.bar.active
+          foreground: Commons.Color.popups.text
+          accent: Commons.Color.bar.active
           onEditingFinished: root.save({collapsedGlyph: text})
         }
       }
       ColumnLayout {
         Layout.fillWidth: true
-        Text { text: "Expanded glyph"; color: Color.muted; font.family: Style.font.family; font.pixelSize: Style.font.caption }
+        Text { text: "Expanded glyph"; color: Commons.Color.muted; font.family: Style.font.family; font.pixelSize: Style.font.caption }
         TextField {
           objectName: "expandedGlyphEditor"
           Layout.fillWidth: true
           text: String(root.appearance.expandedGlyph || "")
-          foreground: Color.popups.text
-          accent: Color.bar.active
+          foreground: Commons.Color.popups.text
+          accent: Commons.Color.bar.active
           onEditingFinished: root.save({expandedGlyph: text})
         }
       }
@@ -80,13 +81,13 @@ Flickable {
           required property var modelData
           Layout.fillWidth: true
           Layout.preferredWidth: 1
-          Text { text: sizeEditor.modelData.label; color: Color.muted; font.family: Style.font.family; font.pixelSize: Style.font.caption }
+          Text { text: sizeEditor.modelData.label; color: Commons.Color.muted; font.family: Style.font.family; font.pixelSize: Style.font.caption }
           TextField {
             objectName: sizeEditor.modelData.key + "Editor"
             Layout.fillWidth: true
             text: String(root.appearance[sizeEditor.modelData.key])
-            foreground: Color.popups.text
-            accent: Color.bar.active
+            foreground: Commons.Color.popups.text
+            accent: Commons.Color.bar.active
             validator: IntValidator { bottom: sizeEditor.modelData.minimum; top: sizeEditor.modelData.maximum }
             onEditingFinished: { var patch = {}; patch[sizeEditor.modelData.key] = Number(text); root.save(patch) }
           }
@@ -97,7 +98,7 @@ Flickable {
     Text {
       Layout.fillWidth: true
       text: "State colors"
-      color: Color.popups.text
+      color: Commons.Color.popups.text
       font.family: Style.font.family
       font.pixelSize: Style.font.body
       font.bold: true
@@ -111,7 +112,7 @@ Flickable {
         label: "Collapsed"
         value: String(root.appearance.collapsedColorRole || "foreground")
         options: [{value:"foreground",label:"Foreground"},{value:"accent",label:"Accent"},{value:"muted",label:"Muted"},{value:"urgent",label:"Urgent"}]
-        foreground: Color.popups.text; accent: Color.bar.active
+        foreground: Commons.Color.popups.text; accent: Commons.Color.bar.active
         onChanged: function(value) { root.save({collapsedColorRole:value}) }
       }
       Dropdown {
@@ -120,7 +121,7 @@ Flickable {
         label: "Expanded"
         value: String(root.appearance.expandedColorRole || "accent")
         options: [{value:"foreground",label:"Foreground"},{value:"accent",label:"Accent"},{value:"muted",label:"Muted"},{value:"urgent",label:"Urgent"}]
-        foreground: Color.popups.text; accent: Color.bar.active
+        foreground: Commons.Color.popups.text; accent: Commons.Color.bar.active
         onChanged: function(value) { root.save({expandedColorRole:value}) }
       }
     }
@@ -128,7 +129,7 @@ Flickable {
     Text {
       Layout.fillWidth: true
       text: "Behavior"
-      color: Color.popups.text
+      color: Commons.Color.popups.text
       font.family: Style.font.family
       font.pixelSize: Style.font.body
       font.bold: true
@@ -142,7 +143,7 @@ Flickable {
         label: "Left click"
         value: String(root.appearance.leftClickAction || "toggle")
         options: [{value:"toggle",label:"Toggle"},{value:"expand",label:"Expand only"},{value:"collapse",label:"Collapse only"}]
-        foreground: Color.popups.text; accent: Color.bar.active
+        foreground: Commons.Color.popups.text; accent: Commons.Color.bar.active
         onChanged: function(value) { root.save({leftClickAction:value}) }
       }
       Dropdown {
@@ -151,7 +152,7 @@ Flickable {
         label: "Middle click"
         value: String(root.appearance.middleClickAction || "settings")
         options: [{value:"settings",label:"Open settings"},{value:"toggle",label:"Toggle"},{value:"none",label:"Do nothing"}]
-        foreground: Color.popups.text; accent: Color.bar.active
+        foreground: Commons.Color.popups.text; accent: Commons.Color.bar.active
         onChanged: function(value) { root.save({middleClickAction:value}) }
       }
     }
@@ -164,17 +165,17 @@ Flickable {
         label: "This monitor"
         value: root.service ? root.service.modeFor(root.controller.monitorName) : "toggle"
         options: [{value:"toggle",label:"Click toggle"},{value:"hover",label:"Hover reveal"}]
-        foreground: Color.popups.text; accent: Color.bar.active
+        foreground: Commons.Color.popups.text; accent: Commons.Color.bar.active
         onChanged: function(value) { if (root.service) root.service.setModeFor(root.controller.monitorName, value) }
       }
       ColumnLayout {
         Layout.preferredWidth: Style.space(100)
-        Text { text: "Hover close (ms)"; color: Color.muted; font.family: Style.font.family; font.pixelSize: Style.font.caption }
+        Text { text: "Hover close (ms)"; color: Commons.Color.muted; font.family: Style.font.family; font.pixelSize: Style.font.caption }
         TextField {
           objectName: "hoverCollapseDelayEditor"
           Layout.fillWidth: true
           text: String(root.appearance.hoverCollapseDelay || 350)
-          foreground: Color.popups.text; accent: Color.bar.active
+          foreground: Commons.Color.popups.text; accent: Commons.Color.bar.active
           validator: IntValidator { bottom: 100; top: 2000 }
           onEditingFinished: root.save({hoverCollapseDelay:Number(text)})
         }
@@ -190,18 +191,18 @@ Flickable {
         label: "Smooth transitions"
         description: "Animate widget reveal and collapse."
         checked: root.appearance.animationEnabled !== false
-        foreground: Color.popups.text; accent: Color.bar.active
+        foreground: Commons.Color.popups.text; accent: Commons.Color.bar.active
         fontFamily: Style.font.family; titleSize: Style.font.bodySmall; descriptionSize: Style.font.caption
         onClicked: root.save({animationEnabled: !checked})
       }
       ColumnLayout {
         Layout.preferredWidth: Style.space(100)
-        Text { text: "Duration (ms)"; color: Color.muted; font.family: Style.font.family; font.pixelSize: Style.font.caption }
+        Text { text: "Duration (ms)"; color: Commons.Color.muted; font.family: Style.font.family; font.pixelSize: Style.font.caption }
         TextField {
           objectName: "animationDurationEditor"
           Layout.fillWidth: true
           text: String(root.appearance.animationDuration || 250)
-          foreground: Color.popups.text; accent: Color.bar.active
+          foreground: Commons.Color.popups.text; accent: Commons.Color.bar.active
           validator: IntValidator { bottom: 80; top: 1000 }
           onEditingFinished: root.save({animationDuration:Number(text)})
         }
@@ -222,7 +223,7 @@ Flickable {
           {value:"uniform",label:"Uniform reveal"},
           {value:"instant",label:"Instant"}
         ]
-        foreground: Color.popups.text; accent: Color.bar.active
+        foreground: Commons.Color.popups.text; accent: Commons.Color.bar.active
         onChanged: function(value) { root.save({animationStyle:value}) }
       }
       Dropdown {
@@ -237,7 +238,7 @@ Flickable {
           {value:"gentle",label:"Gentle"},
           {value:"linear",label:"Linear"}
         ]
-        foreground: Color.popups.text; accent: Color.bar.active
+        foreground: Commons.Color.popups.text; accent: Commons.Color.bar.active
         onChanged: function(value) { root.save({animationCurve:value}) }
       }
     }
@@ -248,8 +249,8 @@ Flickable {
       label: "Show tooltip"
       description: "Describe the current drawer action on hover."
       checked: root.appearance.showTooltip !== false
-      foreground: Color.popups.text
-      accent: Color.bar.active
+      foreground: Commons.Color.popups.text
+      accent: Commons.Color.bar.active
       fontFamily: Style.font.family
       titleSize: Style.font.bodySmall
       descriptionSize: Style.font.caption
@@ -258,7 +259,7 @@ Flickable {
     Text {
       Layout.fillWidth: true
       text: "Right-click always opens settings so customization remains reachable."
-      color: Color.muted
+      color: Commons.Color.muted
       font.family: Style.font.family
       font.pixelSize: Style.font.caption
       wrapMode: Text.WordWrap
