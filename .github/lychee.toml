@@ -1,3 +1,6 @@
-# Verify immutable commit links against GitHub's commit API. The HTML commit
-# viewer can return 503 for large diffs even when the commit exists.
-remap = ['^https://github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)/commit/([0-9a-f]{40})$ https://api.github.com/repos/${1}/${2}/commits/${3}']
+# GitHub's HTML views of commits and files can return 503.
+# Use GitHub's API for commit IDs and the raw service for file links.
+remap = [
+  '^https://github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)/commit/([0-9a-f]{40})$ https://api.github.com/repos/${1}/${2}/commits/${3}',
+  '^https://github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)/blob/(main|master|[0-9a-f]{40})/(.+)$ https://raw.githubusercontent.com/${1}/${2}/${3}/${4}',
+]
