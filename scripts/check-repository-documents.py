@@ -26,7 +26,8 @@ def link_command(repository, lychee):
     compare = (rf"^https://github\.com/bolens/{repository}/compare/"
                if repository == "omarchy-privacy-devices" else
                rf"^https://github\.com/bolens/{repository}/(compare|releases/tag)/")
-    return [lychee, "--no-progress", "--exclude-path", "(^|/)node_modules/",
+    return [lychee, "--config", ".github/lychee.toml", "--no-progress",
+            "--exclude-path", "(^|/)node_modules/",
             "--accept", "200,204,206,429", "--exclude", compare, "--exclude",
             rf"^https://bolens[.]github[.]io/{repository}/changelog/$",
             "./**/*.md", "./_site/**/*.html"]

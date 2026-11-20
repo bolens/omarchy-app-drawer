@@ -45,6 +45,7 @@ class Contracts(unittest.TestCase):
 
     def test_links_keep_repository_specific_trust_boundaries(self):
         command = DOCS.link_command("omarchy-app-drawer", "lychee")
+        self.assertEqual(command[1:3], ["--config", ".github/lychee.toml"])
         self.assertIn("200,204,206,429", command)
         self.assertIn("./**/*.md", command)
         self.assertIn("./_site/**/*.html", command)
