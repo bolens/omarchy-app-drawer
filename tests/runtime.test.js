@@ -51,7 +51,7 @@ assert.equal(manifest.barWidget.allowMultiple, false)
 assert.equal(manifest.keepLoaded, true)
 assert.match(service, /function canMutate\(\)/)
 assert.match(service, /if \(!canMutate\(\)\) return fail/)
-assert.match(service, /function persistConfig\(mutator\)[\s\S]*try[\s\S]*shell\.mutateShellConfig\(mutator\)[\s\S]*catch/,
+assert.match(service, /function persistConfig\(mutator\)[\s\S]*try[\s\S]*writeHostConfig\(mutator\)[\s\S]*catch/,
   "all direct persistence paths must convert exceptions into deterministic IPC errors")
 assert.match(service, /monitorIntents = previousIntents[\s\S]*return "error: " \+ lastError/,
   "failed monitor persistence must roll back its speculative intent")

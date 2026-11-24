@@ -8,13 +8,22 @@ command -v jq >/dev/null || { printf 'jq is required for safe JSON migration.\n'
 backup="$config.pre-app-drawer-v2"
 temporary=$(mktemp "${TMPDIR:-/tmp}/omarchy-app-drawer.XXXXXX")
 trap 'rm -f -- "$temporary"' EXIT
-cp -p -- "$config" "$backup"
+[[ -e $backup ]] || cp -p -- "$config" "$backup"
 jq --arg id "$plugin_id" --arg legacy "$legacy_plugin_id" '
+  def entryid: if type == "string" then . else (.id // .plugin // .module // "") end;
   .bar = (.bar // {}) |
   .bar.layout = (.bar.layout // {}) |
-  .bar.layout.right = ((.bar.layout.right // []) | map(select((if type == "string" then . else (.id // .plugin // .module // "") end) as $entry | $entry != $id and $entry != $legacy)) + [$id]) |
+  (.bar.layout.right // []) as $right |
+  (($right | map(select(entryid == $id)) | .[0]) //
+   ($right | map(select(entryid == $legacy)) | .[0]) // {id: $id}) as $existing |
+  ($existing | if type == "object" then .id = $id | del(.plugin, .module) else {id: $id} end) as $entry |
+  .bar.layout.right = (reduce $right[] as $item ([];
+    if ($item | entryid) == $id or ($item | entryid) == $legacy then
+      if any(.[]; entryid == $id) then . else . + [$entry] end
+    else . + [$item] end) |
+    if any(.[]; entryid == $id) then . else . + [$entry] end) |
   .bar.id = "omarchy.bar" |
-  .bar.drawerExpanded = true
+  if (.bar | has("drawerExpanded")) then . else .bar.drawerExpanded = true end
 ' "$config" >"$temporary"
 jq -e . "$temporary" >/dev/null
 install -m 0644 -- "$temporary" "$config"

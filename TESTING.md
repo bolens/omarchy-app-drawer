@@ -21,6 +21,8 @@ failure reports upstream drift without blocking supported-version work.
 CI also runs ShellCheck, Actionlint, link checks, HTML and XML validation, and a
 Lighthouse accessibility audit. The accessibility score must remain 1.00.
 
+The isolated `RuntimeScopedHostTest.qml` harness covers settings reads, scoped saves, rejection, pending edits, and unrelated state preservation without modifying the desktop. `tests/host_config.test.js` covers the pure legacy/scoped adaptation contract.
+
 ## Capture visual evidence
 
 Run the reversible capture check on an existing Omarchy Shell session:

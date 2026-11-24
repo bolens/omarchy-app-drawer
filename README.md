@@ -36,7 +36,7 @@ omarchy plugin add https://github.com/bolens/omarchy-app-drawer.git --enable
 scripts/migrate-to-stock-bar
 ```
 
-The idempotent migration switches to `omarchy.bar`, replaces the legacy `io.github.amitcpatel.omabar-drawer` layout entry when present, installs `io.github.bolens.app-drawer`, and backs up `shell.json`.
+The idempotent migration switches to `omarchy.bar`, replaces the legacy `io.github.amitcpatel.omabar-drawer` layout entry when present, installs `io.github.bolens.app-drawer`, and backs up `shell.json`. It also converts the drawer slot into an inline settings entry while preserving its existing position and custom fields. Re-running it preserves your first backup, pins, appearance and monitor preferences. Run it once when updating an older string-only drawer entry.
 
 ## Remove
 
@@ -57,7 +57,7 @@ There are no external packages, downloads, services, accounts, API keys, or netw
 
 ## Configuration and privacy
 
-App Drawer reads the existing `bar.layout` section from `~/.config/omarchy/shell.json`. It changes configuration only after an explicit user action. Per-monitor visibility and mode are stored under the bar drawer state; appearance and shared pins are stored alongside them. Writes are normalized and serialized through one service.
+App Drawer reads the existing `bar.layout` section from `~/.config/omarchy/shell.json`. It changes configuration only after an explicit user action. Per-monitor visibility and mode are stored under the bar drawer state; appearance and shared pins are stored alongside them. Writes are normalized and serialized through one service. Current scoped hosts store drawer preferences under the drawer entry’s `drawerState` settings; existing `bar.drawer*` preferences remain a read fallback. Older hosts retain their existing bar-level persistence path. The plugin requests no replacement-bar capability.
 
 The plugin performs no network requests, telemetry, credential access, privilege escalation, package installation, or service management. It does not launch Quickshell or detached processes. Test harnesses use isolated temporary Quickshell paths and kill exactly those paths when finished.
 

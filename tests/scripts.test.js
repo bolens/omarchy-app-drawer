@@ -12,9 +12,18 @@ try {
   assert.equal(result.status, 0, result.stderr)
   const migrated = JSON.parse(fs.readFileSync(config,"utf8"))
   assert.equal(migrated.bar.id, "omarchy.bar")
-  assert.deepEqual(migrated.bar.layout.right, ["one","io.github.bolens.app-drawer"])
+  assert.deepEqual(migrated.bar.layout.right, ["one",{id:"io.github.bolens.app-drawer"}])
   assert.equal(migrated.bar.drawerExpanded, true)
   assert.ok(fs.existsSync(config+".pre-app-drawer-v2"))
+  const backup = fs.readFileSync(config+".pre-app-drawer-v2", "utf8")
+  migrated.bar.drawerExpanded = false
+  migrated.bar.layout.right[1].custom = {keep: true}
+  migrated.unrelated = {keep: true}
+  fs.writeFileSync(config, JSON.stringify(migrated))
+  result = spawnSync(path.join(root,"scripts/migrate-to-stock-bar"), [config], {encoding:"utf8"})
+  assert.equal(result.status, 0, result.stderr)
+  assert.deepEqual(JSON.parse(fs.readFileSync(config,"utf8")), migrated)
+  assert.equal(fs.readFileSync(config+".pre-app-drawer-v2", "utf8"), backup)
 
   const install = path.join(temp,"plugin"); fs.mkdirSync(install)
   result = spawnSync(path.join(root,"scripts/deploy-shell-runtime"), [install], {encoding:"utf8"})
