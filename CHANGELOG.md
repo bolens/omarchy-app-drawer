@@ -13,6 +13,8 @@ All notable changes to App Drawer are documented here. The project follows
 
 ### Fixed
 
+- Keep Pages deployments tied to the current workflow attempt and wait for uploaded artifact metadata.
+
 - Preserve drawer preferences on Omarchy’s scoped plugin API and report rejected saves without losing pending changes.
 - Normalize legacy drawer settings entries without resetting customization or replacing the first migration backup.
 
