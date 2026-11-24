@@ -13,6 +13,9 @@ All notable changes to App Drawer are documented here. The project follows
 
 ### Fixed
 
+- Preserve drawer preferences on Omarchy’s scoped plugin API and report rejected saves without losing pending changes.
+- Normalize legacy drawer settings entries without resetting customization or replacing the first migration backup.
+
 - Keep plugin colors tied to Omarchy’s palette on Qt 6.12.
 
 ## [2.6.7] - 2026-09-01

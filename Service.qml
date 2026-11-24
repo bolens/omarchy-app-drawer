@@ -10,7 +10,8 @@ Item {
   property var barWidgetRegistry: null
   property var pluginRegistry: null
   readonly property string moduleName: Model.PLUGIN_ID
-  readonly property var drawerState: Model.state(shell && shell.shellConfig ? shell.shellConfig : ({}))
+  readonly property var hostConfig: Model.configForHost(shell)
+  readonly property var drawerState: Model.state(shell && hostConfig ? hostConfig : ({}))
   readonly property bool expanded: drawerState.expanded
   readonly property var appearance: drawerState.appearance
   property string lastError: ""
@@ -154,12 +155,30 @@ Item {
   }
 
   function canMutate() {
-    return shell && typeof shell.mutateShellConfig === "function"
+    return shell && (("shellConfig" in shell && typeof shell.mutateShellConfig === "function")
+      || typeof shell.updateEntryInline === "function")
+  }
+
+  function writeHostConfig(mutator) {
+    if ("shellConfig" in shell) {
+      if (shell.mutateShellConfig(mutator) === false)
+        throw new Error("host rejected the bar configuration write")
+      return true
+    }
+    var entry = Model.drawerEntrySettings(shell.barConfig)
+    if (!entry) throw new Error("drawer settings entry needs migration; run scripts/migrate-to-stock-bar")
+    var config = Model.configForHost(shell)
+    mutator(config)
+    var next = Model.scopedDrawerSettings(entry, config)
+    if (JSON.stringify(next) === JSON.stringify(entry)) return true
+    if (shell.updateEntryInline(moduleName, next) === false)
+      throw new Error("host rejected the drawer settings write")
+    return true
   }
 
   function persistConfig(mutator) {
     try {
-      shell.mutateShellConfig(mutator)
+      writeHostConfig(mutator)
       return true
     } catch (error) {
       fail(String(error && error.message ? error.message : error))
@@ -168,13 +187,13 @@ Item {
   }
 
   function currentState() {
-    return Model.state(shell && shell.shellConfig ? shell.shellConfig : ({}))
+    return Model.state(shell && hostConfig ? hostConfig : ({}))
   }
 
   function ensureMigrated() {
-    if (!canMutate() || !shell.shellConfig) return false
+    if (!canMutate() || !hostConfig) return false
     var candidate
-    try { candidate = JSON.parse(JSON.stringify(shell.shellConfig)) }
+    try { candidate = JSON.parse(JSON.stringify(hostConfig)) }
     catch (error) { fail("shell configuration could not be inspected"); return false }
     var preview = Model.migrateConfig(candidate)
     if (!preview.changed) return false
@@ -231,7 +250,7 @@ Item {
     if (!key) return fail("monitor name is unavailable")
     lastError = ""
     var snapshot = currentState()
-    if (Model.monitorExpanded(shell.shellConfig, key) === requested && snapshot.right.length > 1)
+    if (Model.monitorExpanded(hostConfig, key) === requested && snapshot.right.length > 1)
       return requested ? "expanded" : "collapsed"
     var intents = Object.assign({}, monitorIntents)
     intents[key] = requested
@@ -253,7 +272,7 @@ Item {
     if (!canMutate()) return fail("shell configuration mutator is unavailable")
     if (!key) return fail("monitor name is unavailable")
     var base = Object.prototype.hasOwnProperty.call(monitorIntents, key)
-      ? monitorIntents[key] : Model.monitorExpanded(shell.shellConfig, key)
+      ? monitorIntents[key] : Model.monitorExpanded(hostConfig, key)
     var result = !base
     var intents = Object.assign({}, monitorIntents)
     intents[key] = result
@@ -443,7 +462,7 @@ Item {
     pendingAppearancePatch = null
     pendingPinChanges = null
     try {
-      shell.mutateShellConfig(function(config) {
+      writeHostConfig(function(config) {
         Model.migrateConfig(config)
         if (Model.isObject(appearancePatch)) Model.applyAppearance(config, appearancePatch)
         if (Model.isObject(pinChanges)) {

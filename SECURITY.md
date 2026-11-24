@@ -26,3 +26,7 @@ Please use GitHub's private vulnerability reporting for sensitive security repor
 - Run the complete validation suite and inspect dependency-action updates.
 - Verify the GitHub artifact attestation for the release archive.
 - Never publish credentials, private paths, monitor serials, or captured logs.
+
+## Scoped host configuration
+
+On current Omarchy, the plugin reads the public detached bar snapshot and writes only its own entry settings. It does not request the replacement-bar capability or access authentication services. The service copies an explicit allowlist of drawer state into its entry, preserves unrelated entry data, and reports an explicit host rejection as failure. Legacy full-shell hosts retain the original mutation API. The offline migration only normalizes the drawer slot and selected stock bar, validates JSON before installation, and retains the first recovery backup.

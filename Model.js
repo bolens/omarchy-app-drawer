@@ -88,6 +88,46 @@ function restoredEntries(savedEntries, currentEntries, toggleEntry) {
   return result
 }
 
+// Scoped hosts expose a detached bar snapshot and writes to this plugin's
+// own inline entry. Legacy hosts still expose the complete shellConfig.
+var DRAWER_FIELDS = ["drawerExpanded", "drawerExpandedEntries", "drawerAlwaysVisible",
+  "drawerAppearance", "drawerTransition", "drawerMonitorStates", "drawerMonitorModes",
+  "_appDrawerSettingsVersion"]
+
+function drawerEntrySettings(bar) {
+  var layout = isObject(bar) && isObject(bar.layout) ? bar.layout : ({})
+  var sections = Object.keys(layout)
+  for (var section = 0; section < sections.length; section++) {
+    var entries = Array.isArray(layout[sections[section]]) ? layout[sections[section]] : []
+    for (var index = 0; index < entries.length; index++)
+      if (isObject(entries[index]) && entryId(entries[index]) === PLUGIN_ID) return entries[index]
+  }
+  return null
+}
+
+function configForHost(host) {
+  if (!host) return ({})
+  if ("shellConfig" in host && isObject(host.shellConfig)) return host.shellConfig
+  var bar = isObject(host.barConfig) ? JSON.parse(JSON.stringify(host.barConfig)) : ({})
+  var entry = drawerEntrySettings(bar)
+  var scoped = entry && isObject(entry.drawerState) ? entry.drawerState : ({})
+  for (var index = 0; index < DRAWER_FIELDS.length; index++) {
+    var key = DRAWER_FIELDS[index]
+    if (Object.prototype.hasOwnProperty.call(scoped, key)) bar[key] = scoped[key]
+  }
+  return {bar: bar}
+}
+
+function scopedDrawerSettings(entry, config) {
+  var next = JSON.parse(JSON.stringify(entry))
+  next.drawerState = isObject(next.drawerState) ? next.drawerState : ({})
+  for (var index = 0; index < DRAWER_FIELDS.length; index++) {
+    var key = DRAWER_FIELDS[index]
+    if (Object.prototype.hasOwnProperty.call(config.bar, key)) next.drawerState[key] = config.bar[key]
+  }
+  return next
+}
+
 function state(config) {
   var bar = isObject(config) && isObject(config.bar) ? config.bar : ({})
   var layout = isObject(bar.layout) ? bar.layout : ({})

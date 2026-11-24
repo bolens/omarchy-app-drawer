@@ -4,7 +4,7 @@
     "app/RuntimeServiceTest.qml": {
       "source_files": {
         "tests/qml/RuntimeServiceTest.qml": "435faa0441f5443ea13ab139fa513aec93ff29e73ef0b8bc5ab4b3668b506f0d",
-        "Service.qml": "fb375c46436b4d2155800f6869b6ed63a9ec745f10e6cdf1bd03cb998a565c82"
+        "Service.qml": "13da601e2d6d6df5904c8357dba2925e1698797d722801c2fe8941afa055f9d4"
       },
       "caller_evidence": [
         "service.openSettingsOn(\"missing\",\"widgets\")",
@@ -20,7 +20,7 @@
     "app/RuntimeIpcTest.qml": {
       "source_files": {
         "tests/qml/RuntimeIpcTest.qml": "514a88500265c039e39f8ae073eb73030cb8c3d1354641a422460da27109a1ae",
-        "Service.qml": "fb375c46436b4d2155800f6869b6ed63a9ec745f10e6cdf1bd03cb998a565c82"
+        "Service.qml": "13da601e2d6d6df5904c8357dba2925e1698797d722801c2fe8941afa055f9d4"
       },
       "caller_evidence": [
         "{method:\"openMonitorAppearance\",args:[\"missing\"],error:true}",
@@ -38,7 +38,7 @@
     "app/RuntimeMonitorStateTest.qml": {
       "source_files": {
         "tests/qml/RuntimeMonitorStateTest.qml": "2d54316cce4b001b646cc42ddafeb853df7fb1e79398f6b17e9ff34683244704",
-        "Service.qml": "fb375c46436b4d2155800f6869b6ed63a9ec745f10e6cdf1bd03cb998a565c82"
+        "Service.qml": "13da601e2d6d6df5904c8357dba2925e1698797d722801c2fe8941afa055f9d4"
       },
       "caller_evidence": [
         "service.setModeFor(\"DP-1\",\"invalid\")",
@@ -51,7 +51,7 @@
     "app/RuntimeMutationTest.qml": {
       "source_files": {
         "tests/qml/RuntimeMutationTest.qml": "bec9c47ed1d984aeeb56484aa9681dfb75b6986bcb980e66b4b1c7fb88b0afc4",
-        "Service.qml": "fb375c46436b4d2155800f6869b6ed63a9ec745f10e6cdf1bd03cb998a565c82"
+        "Service.qml": "13da601e2d6d6df5904c8357dba2925e1698797d722801c2fe8941afa055f9d4"
       },
       "caller_evidence": [
         "\"fixture persistence failure\"",
@@ -106,6 +106,20 @@
       ],
       "expected_exact_warning_lines": {
         "WARN scene: @tests/fixtures/does-not-exist.qml[-1:-1]: File not found": 1
+      }
+    },
+    "app/RuntimeScopedHostTest.qml": {
+      "source_files": {
+        "tests/qml/RuntimeScopedHostTest.qml": "b140218d23ddcd339123c43df9f4a7fb35edc08f6ebeca0062be3eee91735d90",
+        "Service.qml": "13da601e2d6d6df5904c8357dba2925e1698797d722801c2fe8941afa055f9d4"
+      },
+      "caller_evidence": [
+        "scopedHost.rejectWrites = true",
+        "service.toggleFor(\"fixture\").indexOf(\"error:\")",
+        "service.queueAppearance({iconSize: 25})"
+      ],
+      "expected_qml_messages": {
+        "App Drawer: host rejected the drawer settings write": 2
       }
     }
   }
